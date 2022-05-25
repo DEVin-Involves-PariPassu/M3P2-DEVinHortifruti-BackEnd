@@ -2,8 +2,10 @@ package tech.devinhouse.devinhortifrutiapi.model;
 
 import javax.persistence.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity(name = "vendas")
 public class Venda {
@@ -25,6 +27,9 @@ public class Venda {
     @Column (name = "dt_venda")
     private LocalDateTime dataVenda;
 
+    @Column(name = "total_venda")
+    private BigDecimal totalVenda;
+
     private String cep;
 
     @Column (name = "sigla_estado")
@@ -40,6 +45,9 @@ public class Venda {
 
     @Column (name = "dt_entrega")
     private LocalDate dataEntrega;
+
+    @OneToMany(mappedBy = "venda", fetch = FetchType.EAGER)
+    private List<ItemVenda> itens;
 
     @Column(name = "venda_cancelada")
     private Boolean vendaCancelada;
@@ -60,35 +68,13 @@ public class Venda {
         return dataVenda;
     }
 
-    public String getCep() {
-        return cep;
+    public BigDecimal getTotalVenda() {
+        return totalVenda;
     }
 
-    public String getSiglaEstado() {
-        return siglaEstado;
+    public void setTotalVenda(BigDecimal totalVenda) {
+        this.totalVenda = totalVenda;
     }
 
-    public String getCidade() {
-        return cidade;
-    }
 
-    public String getLogradouro() {
-        return logradouro;
-    }
-
-    public String getBairro() {
-        return bairro;
-    }
-
-    public String getComplemento() {
-        return complemento;
-    }
-
-    public LocalDate getDataEntrega() {
-        return dataEntrega;
-    }
-
-    public Boolean getVendaCancelada() {
-        return vendaCancelada;
-    }
 }
