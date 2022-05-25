@@ -8,7 +8,7 @@ import tech.devinhouse.devinhortifrutiapi.model.Venda;
 public class ItemVenda {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "item_venda_ger")
-    @SequenceGenerator(name = "item_venda_ger", sequenceName = "item_venda_id_seq")
+    @SequenceGenerator(name = "item_venda_ger", sequenceName = "item_venda_id_seq", allocationSize = 1)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY) //deixar como LAZY ou EAGER?
