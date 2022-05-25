@@ -5,6 +5,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity(name = "vendas")
 public class Venda {
@@ -45,6 +46,9 @@ public class Venda {
     @Column (name = "dt_entrega")
     private LocalDate dataEntrega;
 
+    @OneToMany(mappedBy = "venda", fetch = FetchType.EAGER)
+    private List<ItemVenda> itens;
+
     @Column(name = "venda_cancelada")
     private Boolean vendaCancelada;
 
@@ -72,83 +76,5 @@ public class Venda {
         this.totalVenda = totalVenda;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public void setComprador(Long comprador) {
-        this.comprador = comprador;
-    }
-
-    public void setVendedor(Long vendedor) {
-        this.vendedor = vendedor;
-    }
-
-    public void setDataVenda(LocalDateTime dataVenda) {
-        this.dataVenda = dataVenda;
-    }
-
-    public String getCep() {
-        return cep;
-    }
-
-    public void setCep(String cep) {
-        this.cep = cep;
-    }
-
-    public String getSiglaEstado() {
-        return siglaEstado;
-    }
-
-    public void setSiglaEstado(String siglaEstado) {
-        this.siglaEstado = siglaEstado;
-    }
-
-    public String getCidade() {
-        return cidade;
-    }
-
-    public void setCidade(String cidade) {
-        this.cidade = cidade;
-    }
-
-    public String getLogradouro() {
-        return logradouro;
-    }
-
-    public void setLogradouro(String logradouro) {
-        this.logradouro = logradouro;
-    }
-
-    public String getBairro() {
-        return bairro;
-    }
-
-    public void setBairro(String bairro) {
-        this.bairro = bairro;
-    }
-
-    public String getComplemento() {
-        return complemento;
-    }
-
-    public void setComplemento(String complemento) {
-        this.complemento = complemento;
-    }
-
-    public LocalDate getDataEntrega() {
-        return dataEntrega;
-    }
-
-    public void setDataEntrega(LocalDate dataEntrega) {
-        this.dataEntrega = dataEntrega;
-    }
-
-    public Boolean getVendaCancelada() {
-        return vendaCancelada;
-    }
-
-    public void setVendaCancelada(Boolean vendaCancelada) {
-        this.vendaCancelada = vendaCancelada;
-    }
 }

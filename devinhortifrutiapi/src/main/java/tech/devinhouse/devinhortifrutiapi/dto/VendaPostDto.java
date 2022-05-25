@@ -1,18 +1,12 @@
 package tech.devinhouse.devinhortifrutiapi.dto;
 
-import tech.devinhouse.devinhortifrutiapi.dto.ItemVendaDto;
-import java.math.BigDecimal;
+import java.util.List;
 
-public class VendaDto {
-    private Long id;
+public class VendaPostDto {
 
-    private Long comprador;
+    private Long idComprador;
 
-    private Long vendedor;
-
-    private String dataVenda;
-
-    private BigDecimal totalVenda;
+    private Long idVendedor;
 
     private String cep;
 
@@ -28,46 +22,37 @@ public class VendaDto {
 
     private String dataEntrega;
 
-    private List<ItemVendaDto> itens;
+    private List<ItemVendaPostDto> itens;
 
-    public Long getId() {
-        return id;
+    public VendaPostDto(Long idComprador, Long idVendedor,
+                        String cep, String siglaEstado, String cidade, String logradouro, String bairro, String complemento,
+                        String dataEntrega, List<ItemVendaPostDto> itens) {
+        this.idComprador = idComprador;
+        this.idVendedor = idVendedor;
+        this.cep = cep;
+        this.siglaEstado = siglaEstado;
+        this.cidade = cidade;
+        this.logradouro = logradouro;
+        this.bairro = bairro;
+        this.complemento = complemento;
+        this.dataEntrega = dataEntrega;
+        this.itens = itens;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Long getIdComprador() {
+        return idComprador;
     }
 
-    public Long getComprador() {
-        return comprador;
+    public void setIdComprador(Long idComprador) {
+        this.idComprador = idComprador;
     }
 
-    public void setComprador(Long comprador) {
-        this.comprador = comprador;
+    public Long getIdVendedor() {
+        return idVendedor;
     }
 
-    public Long getVendedor() {
-        return vendedor;
-    }
-
-    public void setVendedor(Long vendedor) {
-        this.vendedor = vendedor;
-    }
-
-    public String getDataVenda() {
-        return dataVenda;
-    }
-
-    public void setDataVenda(String dataVenda) {
-        this.dataVenda = dataVenda;
-    }
-
-    public BigDecimal getTotalVenda() {
-        return totalVenda;
-    }
-
-    public void setTotalVenda(BigDecimal totalVenda) {
-        this.totalVenda = totalVenda;
+    public void setIdVendedor(Long idVendedor) {
+        this.idVendedor = idVendedor;
     }
 
     public String getCep() {
@@ -124,5 +109,13 @@ public class VendaDto {
 
     public void setDataEntrega(String dataEntrega) {
         this.dataEntrega = dataEntrega;
+    }
+
+    public List<ItemVendaPostDto> getItens() {
+        return itens;
+    }
+
+    public void setItens(List<ItemVendaPostDto> itens) {
+        this.itens = itens;
     }
 }

@@ -2,6 +2,8 @@ package tech.devinhouse.devinhortifrutiapi.model;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+
+import com.fasterxml.jackson.annotation.JsonGetter;
 import tech.devinhouse.devinhortifrutiapi.model.Venda;
 
 @Entity(name = "item_venda")
