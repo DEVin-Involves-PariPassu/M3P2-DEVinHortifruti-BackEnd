@@ -1,8 +1,8 @@
 CREATE TABLE vendas (
-    id bigserial,
+    id bigserial primary key,
     id_comprador bigint,
     id_vendedor bigint,
-    dt_venda datetime,
+    dt_venda timestamp,
     total_venda decimal,
     cep varchar(8),
     sigla_estado varchar(2),
