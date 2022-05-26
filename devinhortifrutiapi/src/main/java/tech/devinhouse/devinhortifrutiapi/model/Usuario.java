@@ -4,7 +4,7 @@ package tech.devinhouse.devinhortifrutiapi.model;
 import javax.persistence.*;
 import java.time.LocalDate;
 
-@Entity(name = "usuario")
+@Entity(name = "usuarios")
 public class Usuario {
 
     @Id
