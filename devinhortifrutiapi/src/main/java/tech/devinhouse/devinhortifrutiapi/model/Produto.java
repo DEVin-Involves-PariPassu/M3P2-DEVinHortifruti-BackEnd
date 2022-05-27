@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity(name = "produtos")
-public class Produtos {
+public class Produto {
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "produtosger")
@@ -72,11 +72,11 @@ public class Produtos {
     isAtivo = ativo;
   }
 
-  public Produtos() {
+  public Produto() {
 
   }
 
-  public Produtos(Long id, String nome, String descricao, String urlFoto, BigDecimal precoSugerido, boolean isAtivo) {
+  public Produto(Long id, String nome, String descricao, String urlFoto, BigDecimal precoSugerido, boolean isAtivo) {
     this.id = id;
     this.nome = nome;
     this.descricao = descricao;
