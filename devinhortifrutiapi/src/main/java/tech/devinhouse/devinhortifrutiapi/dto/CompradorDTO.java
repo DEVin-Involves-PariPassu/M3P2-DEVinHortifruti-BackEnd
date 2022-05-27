@@ -1,6 +1,6 @@
 package tech.devinhouse.devinhortifrutiapi.dto;
 
-import com.sun.istack.NotNull;
+import javax.validation.constraints.NotNull;
 
 public class CompradorDTO {
     private Long id;

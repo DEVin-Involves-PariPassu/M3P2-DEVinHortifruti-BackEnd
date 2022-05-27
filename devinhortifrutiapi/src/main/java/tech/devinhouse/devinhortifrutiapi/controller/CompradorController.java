@@ -7,6 +7,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.devinhouse.devinhortifrutiapi.dto.CompradorDTO;
 import tech.devinhouse.devinhortifrutiapi.service.CompradorService;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -18,8 +19,8 @@ public class CompradorController {
 
     @PostMapping
     public ResponseEntity<Long> post(
-            @RequestHeader("Authorization") String auth,
-            @RequestBody CompradorDTO comprador
+//            @RequestHeader("Authorization") String auth,
+            @Valid @RequestBody CompradorDTO comprador
     ) {
         Long id = compradorService.salvar(comprador);
 
