@@ -42,7 +42,7 @@ public class VendaService {
     }
 
     public void validarSeProdutoExiste(VendaPostDto vendaPostDto){
-
+        itemVendaService.verificarSeOProdutoExiste(vendaPostDto.getItens());
     }
 
     public BigDecimal calcularTotalDaCompra(VendaPostDto vendaPostDto) {
