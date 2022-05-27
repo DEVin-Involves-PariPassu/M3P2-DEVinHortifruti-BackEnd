@@ -2,12 +2,13 @@ package tech.devinhouse.devinhortifrutiapi.model;
 
 import javax.persistence.*;
 
-@Entity(name = "compradores")
+@Entity(name = "comprador")
 public class Comprador {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "produtosger")
-    @SequenceGenerator(name = "produtosger", sequenceName = "produtos_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "compradorger")
+    @SequenceGenerator(name = "compradorger", sequenceName = "comprador_id_seq", allocationSize = 1)
+
     private Long id;
 
     private String cpf;
