@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import tech.devinhouse.devinhortifrutiapi.dto.VendaPostDto;
 import tech.devinhouse.devinhortifrutiapi.service.VendaService;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/vendas")
 public class VendaController {
@@ -14,13 +16,11 @@ public class VendaController {
     @Autowired
     VendaService vendaService;
 
-
     @PostMapping
     public ResponseEntity<Long> post(
-            @RequestHeader("Authorization") String autorizacaoUsuario,
-            @RequestBody VendaPostDto vendaPostDto
+            @Valid @RequestBody VendaPostDto vendaPostDto
     ) {
-        Long novaVendaId = vendaService.salvarVenda(autorizacaoUsuario, vendaPostDto);
+        Long novaVendaId = vendaService.salvarVenda( vendaPostDto);
         return new ResponseEntity<>(novaVendaId, HttpStatus.CREATED);
     }
 
