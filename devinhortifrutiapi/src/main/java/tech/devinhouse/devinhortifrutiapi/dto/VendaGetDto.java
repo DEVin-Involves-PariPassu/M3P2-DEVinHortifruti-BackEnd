@@ -18,11 +18,11 @@ public class VendaGetDto {
 
     private String endereco;
 
-    private List<ItemVendaPostDto> itens;
+    private List<ItemVendaGetDto> itens;
 
     public VendaGetDto(Long id,
                        String nomeCliente, String cpf, String email, String telefone,
-                       BigDecimal totalVenda, String endereco, List<ItemVendaPostDto> itens) {
+                       BigDecimal totalVenda, String endereco, List<ItemVendaGetDto> itens) {
         this.id = id;
         this.nomeCliente = nomeCliente;
         this.cpf = cpf;
@@ -31,6 +31,9 @@ public class VendaGetDto {
         this.totalVenda = totalVenda;
         this.endereco = endereco;
         this.itens = itens;
+    }
+
+    public VendaGetDto() {
     }
 
     public Long getId() {
@@ -89,11 +92,11 @@ public class VendaGetDto {
         this.endereco = endereco;
     }
 
-    public List<ItemVendaPostDto> getItens() {
+    public List<ItemVendaGetDto> getItens() {
         return itens;
     }
 
-    public void setItens(List<ItemVendaPostDto> itens) {
+    public void setItens(List<ItemVendaGetDto> itens) {
         this.itens = itens;
     }
 }
