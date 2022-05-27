@@ -19,6 +19,9 @@ public class ItemVendaGetDto {
         this.subtotal = subtotal;
     }
 
+    public ItemVendaGetDto() {
+    }
+
     public String getUrlFoto() {
         return urlFoto;
     }
