@@ -11,6 +11,7 @@ public class SmsConsumer {
 
     @RabbitListener(queues = RabbitMQConstants.FILA_SMS)
     private void consumidor(SmsDto sms) {
+        System.out.println("Enviando SMS...");
         System.out.printf("%s - %s%n", sms.getDestinatario(), sms.getMensagem());
         System.out.println("--------------------");
 
