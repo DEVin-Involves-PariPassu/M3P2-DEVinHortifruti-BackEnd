@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/M3P2-DEVinHortifruti-BackEnd.iml" filepath="$PROJECT_DIR$/.idea/M3P2-DEVinHortifruti-BackEnd.iml" />
+      <module fileurl="file://$PROJECT_DIR$/devinhortifrutiapi/devinhortifrutiapi.iml" filepath="$PROJECT_DIR$/devinhortifrutiapi/devinhortifrutiapi.iml" />
     </modules>
   </component>
 </project>
