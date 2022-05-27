@@ -13,5 +13,4 @@ public interface CompradorRepository extends CrudRepository<Comprador, Long>, Jp
     Optional<Comprador> findByCpf(String cpf);
 
     Optional<Comprador> findByEmail(String email);
-
 }
