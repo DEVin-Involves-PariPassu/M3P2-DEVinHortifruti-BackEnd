@@ -4,7 +4,7 @@ package tech.devinhouse.devinhortifrutiapi.model;
 import javax.persistence.*;
 import java.time.LocalDate;
 
-@Entity(name = "usuario")
+@Entity(name = "usuarios")
 public class Usuario {
 
     @Id
@@ -16,8 +16,11 @@ public class Usuario {
     private String senha;
     private String nome;
     private String email;
+
+    @Column(name = "dt_nascimento")
     private LocalDate dtNascimento;
-    private boolean admin;
+
+    private Boolean isAdmin;
 
     public Long getId() {
         return id;
@@ -68,21 +71,11 @@ public class Usuario {
     }
 
     public boolean isAdmin() {
-        return admin;
+        return isAdmin;
     }
 
     public void setAdmin(boolean admin) {
-        this.admin = admin;
-    }
-
-    public Usuario(Long id, String login, String senha, String nome, String email, LocalDate dtNascimento, boolean admin) {
-        this.id = id;
-        this.login = login;
-        this.senha = senha;
-        this.nome = nome;
-        this.email = email;
-        this.dtNascimento = dtNascimento;
-        this.admin = admin;
+        this.isAdmin = admin;
     }
 
     public Usuario() {
