@@ -15,9 +15,6 @@ import java.util.List;
 public class ItemVendaService {
 
     @Autowired
-    VendaRepository vendaRepository;
-
-    @Autowired
     ItemVendaRepository itemVendaRepository;
 
     @Transactional
@@ -33,7 +30,7 @@ public class ItemVendaService {
         ) {
             ItemVendaGetDto itemDto = new ItemVendaGetDto();
             itemDto.setUrlFoto(item.getProduto().getUrlFoto());
-            itemDto.setNome(item.getProduto().getNome());
+            itemDto.setNome(item.getProduto().getName());
             BigDecimal precoUnitario = item.getPrecoUnitario();
             itemDto.setQuantidade(item.getQuantidade());
 

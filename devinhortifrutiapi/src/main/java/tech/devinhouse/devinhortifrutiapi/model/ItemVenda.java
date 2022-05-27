@@ -14,9 +14,9 @@ public class ItemVenda {
     @JoinColumn(name = "id_venda", referencedColumnName = "id")
     private Venda venda;
 
-//    @OneToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "id_produto", referencedColumnName = "id")
-    private Long produto;
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_produto", referencedColumnName = "id")
+    private Produto produto;
 
     @Column(name = "preco_unitario")
     private BigDecimal precoUnitario;
@@ -39,11 +39,11 @@ public class ItemVenda {
         this.venda = venda;
     }
 
-    public Long getProduto() {
+    public Produto getProduto() {
         return produto;
     }
 
-    public void setProduto(Long produto) {
+    public void setProduto(Produto produto) {
         this.produto = produto;
     }
 
