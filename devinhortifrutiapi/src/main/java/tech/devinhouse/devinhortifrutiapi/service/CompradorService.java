@@ -7,6 +7,7 @@ import tech.devinhouse.devinhortifrutiapi.model.Comprador;
 import tech.devinhouse.devinhortifrutiapi.repository.CompradorRepository;
 import tech.devinhouse.devinhortifrutiapi.service.exception.RequiredFieldMissingException;
 
+import javax.persistence.EntityExistsException;
 import javax.transaction.Transactional;
 import java.util.Optional;
 
@@ -29,6 +30,7 @@ public class CompradorService {
         existsEmail(compradorDTO);
         existsTelefone(compradorDTO);
         isUniqueCpf(compradorDTO);
+        isUniqueEmail(compradorDTO);
         Comprador comprador = new Comprador();
         comprador.setNome(compradorDTO.getNome());
         comprador.setCpf(compradorDTO.getCpf());
@@ -64,7 +66,14 @@ public class CompradorService {
     private void isUniqueCpf(CompradorDTO compradorDTO){
         Optional<Comprador> optionalComprador = compradorRepository.findByCpf(compradorDTO.getCpf());
         if(optionalComprador.isPresent()){
-            throw new RequiredFieldMissingException("O CPF " + compradorDTO.getCpf() + " já possui cadastro!");
+            throw new EntityExistsException("O CPF " + compradorDTO.getCpf() + " já possui cadastro!");
+        }
+    }
+
+    private void isUniqueEmail(CompradorDTO compradorDTO){
+        Optional<Comprador> optionalComprador = compradorRepository.findByEmail(compradorDTO.getEmail());
+        if(optionalComprador.isPresent()){
+            throw new EntityExistsException("O e-mail " + compradorDTO.getEmail() + " já possui cadastro!");
         }
     }
 }

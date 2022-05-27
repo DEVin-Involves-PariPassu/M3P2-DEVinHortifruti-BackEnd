@@ -1,5 +1,8 @@
 package tech.devinhouse.devinhortifrutiapi.dto;
 
+import org.hibernate.validator.constraints.br.CPF;
+
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 public class CompradorDTO {
@@ -9,9 +12,11 @@ public class CompradorDTO {
     private String nome;
 
     @NotNull
+    @CPF
     private String cpf;
 
     @NotNull
+    @Email
     private String email;
 
     @NotNull
