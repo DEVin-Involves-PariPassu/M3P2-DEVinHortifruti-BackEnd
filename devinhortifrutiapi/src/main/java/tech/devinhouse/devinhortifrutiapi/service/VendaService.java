@@ -1,15 +1,11 @@
 package tech.devinhouse.devinhortifrutiapi.service;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import tech.devinhouse.devinhortifrutiapi.dto.ItemVendaPostDto;
+
 import tech.devinhouse.devinhortifrutiapi.dto.VendaPostDto;
-import tech.devinhouse.devinhortifrutiapi.model.ItemVenda;
 import tech.devinhouse.devinhortifrutiapi.model.Venda;
 import tech.devinhouse.devinhortifrutiapi.repository.VendaRepository;
 import tech.devinhouse.devinhortifrutiapi.repository.UsuarioRepository;
 import tech.devinhouse.devinhortifrutiapi.repository.ItemVendaRepository;
-import tech.devinhouse.devinhortifrutiapi.service.ItemVendaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -57,6 +53,21 @@ public class VendaService {
 
     private Venda converterVendaDtoEmVenda(VendaPostDto vendaPostDto) {
 
+        var venda = new Venda();
+        venda.setVendedor(vendaPostDto.getIdVendedor());
+        venda.setComprador(vendaPostDto.getIdComprador());
+        venda.setCep(vendaPostDto.getCep());
+        venda.setSiglaEstado(vendaPostDto.getSiglaEstado());
+        venda.setCidade(vendaPostDto.getCidade());
+        venda.setLogradouro(vendaPostDto.getLogradouro());
+        venda.setBairro(vendaPostDto.getBairro());
+        venda.setComplemento(vendaPostDto.getComplemento());
+        venda.setDataEntrega(LocalDate.parse(vendaPostDto.getDataEntrega()));
+        venda.setItens(itemVendaService.converterItemVendaDtoEmItemVenda(vendaPostDto.getItens()));
+        venda.setDataVenda(LocalDateTime.now());
+        venda.setTotalVenda(calcularTotalDaCompra(vendaPostDto));
+
+        return venda;
     }
 
     public void enviarEmail(){
