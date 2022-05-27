@@ -1,6 +1,6 @@
 package tech.devinhouse.devinhortifrutiapi.dto;
 
-import com.sun.istack.NotNull;
+import javax.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 
@@ -8,19 +8,19 @@ public class ProdutoDTO {
 
     private Long id;
 
-    @NotNull
+     @NotNull (message = "Nome do produto é requerido")
     private String nome;
 
-    @NotNull
+     @NotNull(message = "Descrição do produto é requerida")
     private String descricao;
 
-    @NotNull
+      @NotNull(message = "URL da imagem do produto é requerida")
     private String urlFoto;
 
-    @NotNull
+     @NotNull(message = "Preço do produto é requerido")
     private BigDecimal precoAtual;
 
-    @NotNull
+     @NotNull(message = "Status do produto é requerido")
     private Boolean isActive;
 
     public Long getId() {
