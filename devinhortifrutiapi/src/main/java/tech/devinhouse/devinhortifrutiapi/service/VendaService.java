@@ -1,6 +1,5 @@
 package tech.devinhouse.devinhortifrutiapi.service;
 
-
 import tech.devinhouse.devinhortifrutiapi.dto.VendaPostDto;
 import tech.devinhouse.devinhortifrutiapi.model.Venda;
 import tech.devinhouse.devinhortifrutiapi.repository.VendaRepository;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 
 @Service
@@ -30,7 +28,14 @@ public class VendaService {
     ItemVendaService itemVendaService;
 
     public Long salvarVenda(VendaPostDto vendaPostDto){
-
+        validarSeVendedorExiste(vendaPostDto.getIdVendedor());
+        validarSeCompradorExiste(vendaPostDto.getIdComprador());
+        validarSeProdutoExiste(vendaPostDto);
+        var novaVenda = converterVendaDtoEmVenda(vendaPostDto);
+        vendaRepository.save(novaVenda);
+        enviarEmail(novaVenda);
+        enviarSMS(novaVenda);
+        return novaVenda.getId();
     }
 
     public void validarSeVendedorExiste(Long idVendedor){
@@ -70,11 +75,11 @@ public class VendaService {
         return venda;
     }
 
-    public void enviarEmail(){
+    public void enviarEmail(Venda venda){
 
     }
 
-    public void enviarSMS(VendaPostDto vendaPostDto){
+    public void enviarSMS(Venda venda){
 
     }
 
