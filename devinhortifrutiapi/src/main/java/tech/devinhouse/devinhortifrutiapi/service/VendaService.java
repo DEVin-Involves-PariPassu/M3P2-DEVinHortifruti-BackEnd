@@ -50,7 +50,8 @@ public class VendaService {
     }
 
     public BigDecimal calcularTotalDaCompra(VendaPostDto vendaPostDto) {
-
+        BigDecimal totalCompra = itemVendaService.calcularTotalDaVenda(vendaPostDto.getItens());
+        return totalCompra;
     }
 
 
