@@ -20,15 +20,15 @@ public class CompradorController {
     @PostMapping
     public ResponseEntity<Long> post(
 //            @RequestHeader("Authorization") String auth,
-            @Valid @RequestBody CompradorDTO comprador
+            @Valid @RequestBody CompradorDTO compradorDTO
     ) {
-        Long id = compradorService.salvar(comprador);
+        Long idComprador = compradorService.salvar(compradorDTO);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(id).toUri();
+                .buildAndExpand(idComprador).toUri();
 
-        return ResponseEntity.created(location).body(id);
+        return ResponseEntity.created(location).body(idComprador);
     }
 
 }
