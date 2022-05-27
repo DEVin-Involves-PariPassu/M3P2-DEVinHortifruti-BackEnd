@@ -1,6 +1,7 @@
 package tech.devinhouse.devinhortifrutiapi.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import tech.devinhouse.devinhortifrutiapi.dto.ItemVendaGetDto;
 import tech.devinhouse.devinhortifrutiapi.model.ItemVenda;
 import tech.devinhouse.devinhortifrutiapi.model.Venda;
@@ -12,6 +13,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class ItemVendaService {
 
     @Autowired
