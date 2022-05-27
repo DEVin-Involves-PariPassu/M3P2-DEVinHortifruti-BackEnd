@@ -42,7 +42,7 @@ public class VendaService {
     }
 
     public void validarSeCompradorExiste(Long idComprador){
-
+        usuarioRepository.findById(idComprador).orElseThrow(() -> new IllegalArgumentException("Id do comprador é inválido "));
     }
 
     public void validarSeProdutoExiste(VendaPostDto vendaPostDto){
