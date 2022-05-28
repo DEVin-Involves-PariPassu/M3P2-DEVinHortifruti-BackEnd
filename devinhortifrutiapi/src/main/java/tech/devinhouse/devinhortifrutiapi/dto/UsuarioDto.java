@@ -6,7 +6,7 @@ import java.time.format.DateTimeParseException;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-public class UsuarioDto {
+public class Usuario {
 
     @NotBlank(message = "Informe o nome")
     private String nome;
