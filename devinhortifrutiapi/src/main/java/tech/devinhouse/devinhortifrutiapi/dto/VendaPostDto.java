@@ -34,7 +34,7 @@ public class VendaPostDto {
     @NotBlank
     private String dataEntrega;
 
-    @NotBlank
+    @NotNull
     private List<ItemVendaPostDto> itens;
 
     public VendaPostDto(Long idComprador, Long idVendedor,
