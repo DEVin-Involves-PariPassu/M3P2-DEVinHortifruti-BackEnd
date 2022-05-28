@@ -108,4 +108,13 @@ public class CompradorService {
 
         return  comprador;
     }
+
+    public Comprador getComprador(String cpf) {
+        Optional<Comprador> compradorOpt = this.compradorRepository.findByCpf(cpf);
+        if (compradorOpt.isEmpty()) {
+            throw new EntityNotFoundException("Comprador não encontrado.");
+        }
+        return compradorOpt.get();
+    }
+  
 }
