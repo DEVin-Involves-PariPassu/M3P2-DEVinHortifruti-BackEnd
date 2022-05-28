@@ -16,12 +16,12 @@ public class Venda {
 
     private Long id;
 
-    //@ManyToOne
-    //@JoinColumn(name = "id_comprador", referencedColumnName = "id")
+    @ManyToOne
+    @JoinColumn(name = "id_comprador", referencedColumnName = "id")
     private Long comprador;
 
-    //@ManyToOne
-    //@JoinColumn(name = "id_vendedor", referencedColumnName = "id")
+    @ManyToOne
+    @JoinColumn(name = "id_vendedor", referencedColumnName = "id")
     private Long vendedor;
 
     @Column (name = "dt_venda")
