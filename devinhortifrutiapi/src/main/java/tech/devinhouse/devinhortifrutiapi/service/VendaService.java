@@ -82,7 +82,6 @@ public class VendaService {
         venda.setBairro(vendaPostDto.getBairro());
         venda.setComplemento(vendaPostDto.getComplemento());
         venda.setDataEntrega(formatarDataDeEntrega(vendaPostDto));
-        //venda.setItens(itemVendaService.converterItemVendaDtoEmItemVenda(vendaPostDto.getItens()));
         venda.setDataVenda(LocalDateTime.now());
         venda.setTotalVenda(calcularTotalDaCompra(vendaPostDto));
 
