@@ -1,5 +1,5 @@
 create table compradores (
-     id bigint primary key,
+     id bigserial primary key,
      cpf varchar(11) not null unique,
      nome varchar(200) not null,
      email varchar(150) not null unique,
