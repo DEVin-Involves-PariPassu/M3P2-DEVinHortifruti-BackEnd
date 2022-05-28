@@ -8,15 +8,11 @@ public class Comprador {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "compradorger")
     @SequenceGenerator(name = "compradorger", sequenceName = "comprador_id_seq", allocationSize = 1)
-
     private Long id;
 
     private String cpf;
-
     private String nome;
-
     private String email;
-
     private String telefone;
 
     public Long getId() {

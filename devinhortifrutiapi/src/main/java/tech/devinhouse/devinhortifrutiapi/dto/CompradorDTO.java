@@ -3,23 +3,28 @@ package tech.devinhouse.devinhortifrutiapi.dto;
 import org.hibernate.validator.constraints.br.CPF;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 public class CompradorDTO {
     private Long id;
 
-    @NotNull
+    @NotBlank(message = "Campo Nome obrigatório!")
+    @NotNull (message = "Campo Nome obrigatório!")
     private String nome;
 
-    @NotNull
-    @CPF
+    @NotBlank(message = "Campo CPF obrigatório!")
+    @NotNull(message = "Campo CPF obrigatório!")
+    @CPF(message = "CPF inválido!")
     private String cpf;
 
-    @NotNull
-    @Email
+    @NotBlank(message = "Campo E-mail obrigatório!")
+    @NotNull(message = "Campo E-mail obrigatório!")
+    @Email(message = "E-mail inválido!")
     private String email;
 
-    @NotNull
+    @NotBlank(message = "Campo Telefone obrigatório!")
+    @NotNull(message = "Campo Telefone obrigatório!")
     private String telefone;
 
     public Long getId() {

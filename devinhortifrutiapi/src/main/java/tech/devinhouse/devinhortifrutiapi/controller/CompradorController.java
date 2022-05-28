@@ -1,5 +1,7 @@
 package tech.devinhouse.devinhortifrutiapi.controller;
 
+import com.sun.istack.NotNull;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,20 @@ public class CompradorController {
         return ResponseEntity.created(location).body(idComprador);
     }
 
+    @PutMapping(value = "/{id_comprador}")
+    public ResponseEntity<Long> put(
+            @NotNull @PathVariable Long id_comprador,
+//            @RequestHeader("Authorization") String auth,
+            @Valid @RequestBody CompradorDTO compradorDTO) {
+
+        if (id_comprador == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        compradorService.updateDoPut(id_comprador, compradorDTO);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+  
     @GetMapping
     public Comprador get(
         @RequestParam String cpf
