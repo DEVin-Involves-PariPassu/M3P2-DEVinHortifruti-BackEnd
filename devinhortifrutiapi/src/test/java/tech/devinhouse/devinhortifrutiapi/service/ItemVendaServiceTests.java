@@ -1,2 +1,4 @@
-package tech.devinhouse.devinhortifrutiapi.service;public class ItemVendaServiceTests {
+package tech.devinhouse.devinhortifrutiapi.service;
+
+public class ItemVendaServiceTests {
 }
