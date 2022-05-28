@@ -10,7 +10,7 @@ import javax.validation.*;
 import javax.validation.constraints.NotNull;
 
 @RestController
-@RequestMapping("/produtos")
+@RequestMapping("/produto")
 public class ProdutoController {
 
     @Autowired
@@ -30,7 +30,7 @@ public class ProdutoController {
                                     @RequestBody ProdutoDTO produtoDTO) {
 
         produtoService.atualizar(id_produto, produtoDTO);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.ok(id_produto);
     }
 
 }
