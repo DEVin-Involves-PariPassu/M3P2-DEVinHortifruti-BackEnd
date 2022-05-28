@@ -23,6 +23,9 @@ public class ItemVendaPostDto {
         this.quantidade = quantidade;
     }
 
+    public ItemVendaPostDto() {
+    }
+
     public Long getIdProduto() {
         return idProduto;
     }

@@ -52,6 +52,9 @@ public class VendaPostDto {
         this.itens = itens;
     }
 
+    public VendaPostDto() {
+    }
+
     public Long getIdComprador() {
         return idComprador;
     }

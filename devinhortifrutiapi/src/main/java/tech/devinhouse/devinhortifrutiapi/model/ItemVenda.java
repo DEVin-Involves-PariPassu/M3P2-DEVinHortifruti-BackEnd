@@ -39,11 +39,11 @@ public class ItemVenda {
         this.venda = venda;
     }
 
-    public Long getProduto() {
+    public Produto getProduto() {
         return produto;
     }
 
-    public void setProduto(Long produto) {
+    public void setProduto(Produto produto) {
         this.produto = produto;
     }
 

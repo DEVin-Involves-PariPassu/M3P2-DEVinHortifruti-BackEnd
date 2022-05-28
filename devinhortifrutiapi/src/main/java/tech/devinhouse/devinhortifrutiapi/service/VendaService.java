@@ -1,10 +1,14 @@
 package tech.devinhouse.devinhortifrutiapi.service;
 
+
 import tech.devinhouse.devinhortifrutiapi.dto.VendaPostDto;
+
+import tech.devinhouse.devinhortifrutiapi.dto.ItemVendaGetDto;
+import tech.devinhouse.devinhortifrutiapi.dto.VendaGetDto;
 import tech.devinhouse.devinhortifrutiapi.model.Venda;
+import tech.devinhouse.devinhortifrutiapi.repository.CompradorRepository;
 import tech.devinhouse.devinhortifrutiapi.repository.VendaRepository;
 import tech.devinhouse.devinhortifrutiapi.repository.UsuarioRepository;
-import tech.devinhouse.devinhortifrutiapi.repository.ItemVendaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +16,11 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.List;
 
 @Service
 public class VendaService {
@@ -19,23 +28,21 @@ public class VendaService {
     VendaRepository vendaRepository;
 
     @Autowired
-    ItemVendaRepository itemVendaRepository;
+    ItemVendaService itemVendaService;
 
     @Autowired
     UsuarioRepository usuarioRepository;
 
     @Autowired
-    ItemVendaService itemVendaService;
+    CompradorRepository compradorRepository;
 
-    public Long salvarVenda(VendaPostDto vendaPostDto){
+
+    public Venda salvarVenda(VendaPostDto vendaPostDto){
         validarSeVendedorExiste(vendaPostDto.getIdVendedor());
         validarSeCompradorExiste(vendaPostDto.getIdComprador());
         validarSeProdutoExiste(vendaPostDto);
         var novaVenda = converterVendaDtoEmVenda(vendaPostDto);
-        vendaRepository.save(novaVenda);
-        enviarEmail(novaVenda);
-        enviarSMS(novaVenda);
-        return novaVenda.getId();
+        return vendaRepository.save(novaVenda);
     }
 
     public void validarSeVendedorExiste(Long idVendedor){
@@ -43,7 +50,7 @@ public class VendaService {
     }
 
     public void validarSeCompradorExiste(Long idComprador){
-        usuarioRepository.findById(idComprador).orElseThrow(() -> new IllegalArgumentException("Id do comprador é inválido "));
+        compradorRepository.findById(idComprador).orElseThrow(() -> new IllegalArgumentException("Id do comprador é inválido "));
     }
 
     public void validarSeProdutoExiste(VendaPostDto vendaPostDto){
@@ -55,34 +62,60 @@ public class VendaService {
         return totalCompra;
     }
 
+    private LocalDate formatarDataDeEntrega(VendaPostDto vendaPostDto) throws DateTimeParseException {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate dtEntrega = LocalDate.parse(vendaPostDto.getDataEntrega(), dateTimeFormatter);
+        return dtEntrega;
+    }
 
     private Venda converterVendaDtoEmVenda(VendaPostDto vendaPostDto) {
 
         var venda = new Venda();
-        venda.setVendedor(vendaPostDto.getIdVendedor());
-        venda.setComprador(vendaPostDto.getIdComprador());
+        var vendedor = usuarioRepository.findById(vendaPostDto.getIdVendedor()).orElseThrow(() -> new IllegalArgumentException("Id do vendedor é inválido "));
+        var comprador = compradorRepository.findById(vendaPostDto.getIdComprador()).orElseThrow(() -> new IllegalArgumentException("Id do comprador é inválido "));
+        venda.setVendedor(vendedor);
+        venda.setComprador(comprador);
         venda.setCep(vendaPostDto.getCep());
         venda.setSiglaEstado(vendaPostDto.getSiglaEstado());
         venda.setCidade(vendaPostDto.getCidade());
         venda.setLogradouro(vendaPostDto.getLogradouro());
         venda.setBairro(vendaPostDto.getBairro());
         venda.setComplemento(vendaPostDto.getComplemento());
-        venda.setDataEntrega(LocalDate.parse(vendaPostDto.getDataEntrega()));
-        venda.setItens(itemVendaService.converterItemVendaDtoEmItemVenda(vendaPostDto.getItens()));
+        venda.setDataEntrega(formatarDataDeEntrega(vendaPostDto));
+        //venda.setItens(itemVendaService.converterItemVendaDtoEmItemVenda(vendaPostDto.getItens()));
         venda.setDataVenda(LocalDateTime.now());
         venda.setTotalVenda(calcularTotalDaCompra(vendaPostDto));
 
         return venda;
     }
 
-    public void enviarEmail(Venda venda){
-
+    @Transactional
+    public VendaGetDto listarPorId (Long id){
+        Venda venda = vendaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Venda não encontrada"));
+        VendaGetDto vendaDto = converterVendaParaVendaDto(venda);
+        return vendaDto;
     }
 
-    public void enviarSMS(Venda venda){
-
+    public VendaGetDto converterVendaParaVendaDto(Venda venda){
+        VendaGetDto vendaDto = new VendaGetDto();
+        vendaDto.setId(venda.getId());
+        vendaDto.setNomeCliente(venda.getComprador().getNome());
+        vendaDto.setCpf(venda.getComprador().getCpf());
+        vendaDto.setEmail(venda.getComprador().getEmail());
+        vendaDto.setTelefone(venda.getComprador().getTelefone());
+        vendaDto.setTotalVenda(venda.getTotalVenda());
+        String complemento = venda.getComplemento() == null ? "" : String.format(" - %s", venda.getComplemento());
+        String endereco = String.format("%s%s%n%s %s%n%s/%s",
+                venda.getLogradouro(),
+                complemento,
+                venda.getCep(),
+                venda.getBairro(),
+                venda.getCidade(),
+                venda.getSiglaEstado()
+        );
+        vendaDto.setEndereco(endereco);
+        List<ItemVendaGetDto> itens = this.itemVendaService.listarItens(venda);
+        vendaDto.setItens(itens);
+        return vendaDto;
     }
-
-
-
 }

@@ -18,11 +18,11 @@ public class Venda {
 
     @ManyToOne
     @JoinColumn(name = "id_comprador", referencedColumnName = "id")
-    private Long comprador;
+    private Comprador comprador;
 
     @ManyToOne
     @JoinColumn(name = "id_vendedor", referencedColumnName = "id")
-    private Long vendedor;
+    private Usuario vendedor;
 
     @Column (name = "dt_venda")
     private LocalDateTime dataVenda;
@@ -56,24 +56,32 @@ public class Venda {
         return id;
     }
 
-    public Long getComprador() {
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Comprador getComprador() {
         return comprador;
     }
 
-    public Long getVendedor() {
-        return vendedor;
-    }
-
-    public void setComprador(Long comprador) {
+    public void setComprador(Comprador comprador) {
         this.comprador = comprador;
     }
 
-    public void setVendedor(Long vendedor) {
+    public Usuario getVendedor() {
+        return vendedor;
+    }
+
+    public void setVendedor(Usuario vendedor) {
         this.vendedor = vendedor;
     }
 
     public LocalDateTime getDataVenda() {
         return dataVenda;
+    }
+
+    public void setDataVenda(LocalDateTime dataVenda) {
+        this.dataVenda = dataVenda;
     }
 
     public BigDecimal getTotalVenda() {
@@ -84,40 +92,72 @@ public class Venda {
         this.totalVenda = totalVenda;
     }
 
-    public void setDataVenda(LocalDateTime dataVenda) {
-        this.dataVenda = dataVenda;
+    public String getCep() {
+        return cep;
     }
 
     public void setCep(String cep) {
         this.cep = cep;
     }
 
+    public String getSiglaEstado() {
+        return siglaEstado;
+    }
+
     public void setSiglaEstado(String siglaEstado) {
         this.siglaEstado = siglaEstado;
+    }
+
+    public String getCidade() {
+        return cidade;
     }
 
     public void setCidade(String cidade) {
         this.cidade = cidade;
     }
 
+    public String getLogradouro() {
+        return logradouro;
+    }
+
     public void setLogradouro(String logradouro) {
         this.logradouro = logradouro;
+    }
+
+    public String getBairro() {
+        return bairro;
     }
 
     public void setBairro(String bairro) {
         this.bairro = bairro;
     }
 
+    public String getComplemento() {
+        return complemento;
+    }
+
     public void setComplemento(String complemento) {
         this.complemento = complemento;
+    }
+
+    public LocalDate getDataEntrega() {
+        return dataEntrega;
     }
 
     public void setDataEntrega(LocalDate dataEntrega) {
         this.dataEntrega = dataEntrega;
     }
 
+    public List<ItemVenda> getItens() {
+        return itens;
+    }
+
     public void setItens(List<ItemVenda> itens) {
         this.itens = itens;
+    }
+
+    public Boolean getVendaCancelada() {
+        return vendaCancelada;
     }
 
     public void setVendaCancelada(Boolean vendaCancelada) {
