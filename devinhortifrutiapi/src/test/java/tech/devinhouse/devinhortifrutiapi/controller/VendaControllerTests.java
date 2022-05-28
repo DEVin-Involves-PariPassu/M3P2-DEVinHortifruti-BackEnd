@@ -1,2 +1,4 @@
-package tech.devinhouse.devinhortifrutiapi.controller;public class VendaControllerTests {
+package tech.devinhouse.devinhortifrutiapi.controller;
+
+public class VendaControllerTests {
 }
