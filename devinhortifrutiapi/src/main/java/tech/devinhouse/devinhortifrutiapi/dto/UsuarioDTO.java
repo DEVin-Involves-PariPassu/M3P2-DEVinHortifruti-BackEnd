@@ -1,12 +1,10 @@
 package tech.devinhouse.devinhortifrutiapi.dto;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 
-public class Usuario {
+public class UsuarioDTO {
 
     @NotBlank(message = "Informe o nome")
     private String nome;
@@ -52,7 +50,6 @@ public class Usuario {
     }
 
     public void setDtNascimento(LocalDate dtNascimento) {
-
         this.dtNascimento = dtNascimento;
     }
 
@@ -64,5 +61,5 @@ public class Usuario {
         isAdmin = admin;
     }
 
-
 }
+

@@ -1,19 +1,15 @@
 package tech.devinhouse.devinhortifrutiapi.repository;
 
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 import tech.devinhouse.devinhortifrutiapi.model.Usuario;
 
-import java.util.List;
 import java.util.Optional;
 
 
 @Repository
-public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
-
-
-    Optional<Usuario> findByLoginAndSenha(String login, String senha);
+public interface UsuarioRepository extends JpaRepository<Usuario, Long>, JpaSpecificationExecutor<Usuario> {
 
     Optional<Usuario> findUsuarioByLogin(String login);
 
