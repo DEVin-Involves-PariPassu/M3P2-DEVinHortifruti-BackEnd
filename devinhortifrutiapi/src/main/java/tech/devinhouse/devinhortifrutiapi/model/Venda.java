@@ -46,7 +46,7 @@ public class Venda {
     @Column (name = "dt_entrega")
     private LocalDate dataEntrega;
 
-    @OneToMany(mappedBy = "venda", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "venda", fetch = FetchType.EAGER)
     private List<ItemVenda> itens;
 
     @Column(name = "venda_cancelada")
@@ -64,6 +64,14 @@ public class Venda {
         return vendedor;
     }
 
+    public void setComprador(Long comprador) {
+        this.comprador = comprador;
+    }
+
+    public void setVendedor(Long vendedor) {
+        this.vendedor = vendedor;
+    }
+
     public LocalDateTime getDataVenda() {
         return dataVenda;
     }
@@ -76,5 +84,43 @@ public class Venda {
         this.totalVenda = totalVenda;
     }
 
+    public void setDataVenda(LocalDateTime dataVenda) {
+        this.dataVenda = dataVenda;
+    }
 
+    public void setCep(String cep) {
+        this.cep = cep;
+    }
+
+    public void setSiglaEstado(String siglaEstado) {
+        this.siglaEstado = siglaEstado;
+    }
+
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
+    }
+
+    public void setLogradouro(String logradouro) {
+        this.logradouro = logradouro;
+    }
+
+    public void setBairro(String bairro) {
+        this.bairro = bairro;
+    }
+
+    public void setComplemento(String complemento) {
+        this.complemento = complemento;
+    }
+
+    public void setDataEntrega(LocalDate dataEntrega) {
+        this.dataEntrega = dataEntrega;
+    }
+
+    public void setItens(List<ItemVenda> itens) {
+        this.itens = itens;
+    }
+
+    public void setVendaCancelada(Boolean vendaCancelada) {
+        this.vendaCancelada = vendaCancelada;
+    }
 }
