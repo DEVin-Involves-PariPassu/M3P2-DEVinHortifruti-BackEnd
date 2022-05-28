@@ -10,7 +10,7 @@ public class ItemVenda {
     @SequenceGenerator(name = "item_venda_ger", sequenceName = "item_venda_id_seq", allocationSize = 1)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY) //deixar como LAZY ou EAGER?
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_venda", referencedColumnName = "id")
     private Venda venda;
 
