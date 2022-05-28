@@ -66,11 +66,12 @@ public class ItemVendaService {
         return totalVenda;
     }
 
-    public List<ItemVenda> converterItemVendaDtoEmItemVenda(List<ItemVendaPostDto> listaItensDto) {
+    public List<ItemVenda> converterItemVendaDtoEmItemVenda(List<ItemVendaPostDto> listaItensDto, Venda venda) {
         List<ItemVenda> listaItens = new ArrayList<>();
         for (ItemVendaPostDto item : listaItensDto
         ) {
             ItemVenda itemVenda = new ItemVenda();
+            itemVenda.setVenda(venda);
             Produto produto = produtoRepository.findById(item.getIdProduto()).orElseThrow(()-> new IllegalArgumentException("Produto inválido"));
             itemVenda.setProduto(produto);
             itemVenda.setPrecoUnitario(item.getPrecoUnitario());

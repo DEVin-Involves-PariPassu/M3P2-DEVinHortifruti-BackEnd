@@ -5,6 +5,7 @@ import tech.devinhouse.devinhortifrutiapi.dto.VendaPostDto;
 
 import tech.devinhouse.devinhortifrutiapi.dto.ItemVendaGetDto;
 import tech.devinhouse.devinhortifrutiapi.dto.VendaGetDto;
+import tech.devinhouse.devinhortifrutiapi.model.ItemVenda;
 import tech.devinhouse.devinhortifrutiapi.model.Venda;
 import tech.devinhouse.devinhortifrutiapi.repository.CompradorRepository;
 import tech.devinhouse.devinhortifrutiapi.repository.VendaRepository;
@@ -84,7 +85,8 @@ public class VendaService {
         venda.setDataEntrega(formatarDataDeEntrega(vendaPostDto));
         venda.setDataVenda(LocalDateTime.now());
         venda.setTotalVenda(calcularTotalDaCompra(vendaPostDto));
-
+        List<ItemVenda> itens = itemVendaService.converterItemVendaDtoEmItemVenda(vendaPostDto.getItens(), venda);
+        venda.setItens(itens);
         return venda;
     }
 
