@@ -85,7 +85,7 @@ public class VendaService {
         venda.setDataEntrega(formatarDataDeEntrega(vendaPostDto));
         venda.setDataVenda(LocalDateTime.now());
         venda.setTotalVenda(calcularTotalDaCompra(vendaPostDto));
-        List<ItemVenda> itens = itemVendaService.converterItemVendaDtoEmItemVenda(vendaPostDto.getItens());
+        List<ItemVenda> itens = itemVendaService.converterItemVendaDtoEmItemVenda(vendaPostDto.getItens(), venda);
         venda.setItens(itens);
         return venda;
     }
