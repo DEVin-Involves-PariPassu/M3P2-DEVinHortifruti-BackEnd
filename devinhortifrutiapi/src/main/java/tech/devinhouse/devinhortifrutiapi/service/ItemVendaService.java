@@ -3,9 +3,12 @@ package tech.devinhouse.devinhortifrutiapi.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tech.devinhouse.devinhortifrutiapi.dto.ItemVendaGetDto;
+import tech.devinhouse.devinhortifrutiapi.dto.ItemVendaPostDto;
 import tech.devinhouse.devinhortifrutiapi.model.ItemVenda;
+import tech.devinhouse.devinhortifrutiapi.model.Produto;
 import tech.devinhouse.devinhortifrutiapi.model.Venda;
 import tech.devinhouse.devinhortifrutiapi.repository.ItemVendaRepository;
+import tech.devinhouse.devinhortifrutiapi.repository.ProdutoRepository;
 import tech.devinhouse.devinhortifrutiapi.repository.VendaRepository;
 
 import javax.transaction.Transactional;
@@ -19,14 +22,17 @@ public class ItemVendaService {
     @Autowired
     ItemVendaRepository itemVendaRepository;
 
+    @Autowired
+    ProdutoRepository produtoRepository;
+
     @Transactional
-    public List<ItemVendaGetDto> listarItens (Venda venda){
-        List <ItemVenda> listItens = itemVendaRepository.findByVenda(venda);
+    public List<ItemVendaGetDto> listarItens(Venda venda) {
+        List<ItemVenda> listItens = itemVendaRepository.findByVenda(venda);
         List<ItemVendaGetDto> listItensDto = converterItemVendaParaItemVendaDto(listItens);
         return listItensDto;
     }
 
-    private List<ItemVendaGetDto> converterItemVendaParaItemVendaDto(List<ItemVenda> itens){
+    private List<ItemVendaGetDto> converterItemVendaParaItemVendaDto(List<ItemVenda> itens) {
         List<ItemVendaGetDto> listItensDto = new ArrayList<>();
         for (ItemVenda item : itens
         ) {
@@ -42,4 +48,38 @@ public class ItemVendaService {
         }
         return listItensDto;
     }
+
+    public void verificarSeOProdutoExiste(List<ItemVendaPostDto> listaItensDto) {
+        for (ItemVendaPostDto item : listaItensDto
+        ) {
+            Long idProduto = item.getIdProduto();
+            produtoRepository.findById(idProduto).orElseThrow(() -> new IllegalArgumentException("Produto inválido"));
+        }
+    }
+
+    public BigDecimal calcularTotalDaVenda(List<ItemVendaPostDto> listaItensDto) {
+        BigDecimal totalVenda = BigDecimal.ZERO;
+        for (ItemVendaPostDto item : listaItensDto) {
+            BigDecimal totalItem = item.getPrecoUnitario().multiply(new BigDecimal(item.getQuantidade()));
+            totalVenda = totalVenda.add(totalItem);
+        }
+        return totalVenda;
+    }
+
+    public List<ItemVenda> converterItemVendaDtoEmItemVenda(List<ItemVendaPostDto> listaItensDto) {
+        List<ItemVenda> listaItens = new ArrayList<>();
+        for (ItemVendaPostDto item : listaItensDto
+        ) {
+            ItemVenda itemVenda = new ItemVenda();
+            Produto produto = produtoRepository.findById(item.getIdProduto()).orElseThrow(()-> new IllegalArgumentException("Produto inválido"));
+            itemVenda.setProduto(produto);
+            itemVenda.setPrecoUnitario(item.getPrecoUnitario());
+            itemVenda.setQuantidade(item.getQuantidade());
+            listaItens.add(itemVenda);
+        }
+        return listaItens;
+
+    }
 }
+
+

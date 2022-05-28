@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/users")
 @Repository
 public class UsuarioController {
-    @Autowired
-    private UsuarioService service;
+//    @Autowired
+//    private UsuarioService service;
 }

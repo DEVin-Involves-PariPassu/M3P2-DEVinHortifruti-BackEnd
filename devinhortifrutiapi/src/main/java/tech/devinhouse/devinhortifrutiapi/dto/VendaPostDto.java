@@ -1,27 +1,40 @@
 package tech.devinhouse.devinhortifrutiapi.dto;
 
+import com.sun.istack.NotNull;
+
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 public class VendaPostDto {
 
+    @NotNull
     private Long idComprador;
 
+    @NotNull
     private Long idVendedor;
 
+    @NotBlank
     private String cep;
 
+    @NotBlank
     private String siglaEstado;
 
+    @NotBlank
     private String cidade;
 
+    @NotBlank
     private String logradouro;
 
+    @NotBlank
     private String bairro;
 
+    @NotBlank
     private String complemento;
 
+    @NotBlank
     private String dataEntrega;
 
+    @NotNull
     private List<ItemVendaPostDto> itens;
 
     public VendaPostDto(Long idComprador, Long idVendedor,
