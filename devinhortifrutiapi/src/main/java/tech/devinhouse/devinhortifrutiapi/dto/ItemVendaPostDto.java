@@ -1,14 +1,21 @@
 package tech.devinhouse.devinhortifrutiapi.dto;
 
+import com.sun.istack.NotNull;
+
+import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 
 public class ItemVendaPostDto {
 
+    @NotNull
     private Long idProduto;
 
+    @NotNull
     private BigDecimal precoUnitario;
 
+    @NotNull
     private Integer quantidade;
+
 
     public ItemVendaPostDto(Long idProduto, BigDecimal precoUnitario, Integer quantidade) {
         this.idProduto = idProduto;
@@ -42,4 +49,6 @@ public class ItemVendaPostDto {
     public void setQuantidade(Integer quantidade) {
         this.quantidade = quantidade;
     }
+
+
 }

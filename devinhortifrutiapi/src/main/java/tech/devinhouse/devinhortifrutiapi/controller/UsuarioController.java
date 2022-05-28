@@ -1,9 +1,10 @@
 package tech.devinhouse.devinhortifrutiapi.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.token.TokenService;
+// import org.springframework.security.core.token.TokenService;
 import org.springframework.web.bind.annotation.*;
 import tech.devinhouse.devinhortifrutiapi.dto.UsuarioDTO;
 import tech.devinhouse.devinhortifrutiapi.model.Usuario;
@@ -18,8 +19,8 @@ public class UsuarioController {
     @Autowired
     private UsuarioService service;
 
-    @Autowired
-    private TokenService tokenService;
+   // @Autowired
+    //private TokenService tokenService;
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -29,7 +30,7 @@ public class UsuarioController {
             @RequestParam(required = false) String nome,
             @RequestParam(required = false) String dtNascimentoMin,
             @RequestParam(required = false) String dtNascimentoMax
-           // @RequestHeader("Authorization") String auth
+            // @RequestHeader("Authorization") String auth
     ) {
 
         List<Usuario> usuarios = service.listar(nome, dtNascimentoMin, dtNascimentoMax);
@@ -46,9 +47,9 @@ public class UsuarioController {
         return new ResponseEntity<>(idUsuario, HttpStatus.CREATED);
     }
 
-    @PutMapping ("/{id_usuario}")
+    @PutMapping("/{id_usuario}")
     public ResponseEntity<Void> put(@RequestHeader("Authorization") String auth,
-                                    @PathVariable (name = "id_usuario") Long idUsuario,
+                                    @PathVariable(name = "id_usuario") Long idUsuario,
                                     @Valid @RequestBody UsuarioDTO usuarioDTO) {
 
         service.atualizar(idUsuario, usuarioDTO);
@@ -59,7 +60,7 @@ public class UsuarioController {
     @DeleteMapping("/{id_usuario}")
     public ResponseEntity<List<Usuario>> delete(
             //@RequestHeader("Authorization") String auth,
-            @PathVariable (name = "id_usuario") Long idUsuario)  {
+            @PathVariable(name = "id_usuario") Long idUsuario) {
 
         service.delete(idUsuario);
 

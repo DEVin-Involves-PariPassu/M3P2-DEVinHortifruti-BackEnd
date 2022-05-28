@@ -2,7 +2,7 @@ package tech.devinhouse.devinhortifrutiapi.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+// import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import tech.devinhouse.devinhortifrutiapi.dto.UsuarioDTO;
 import tech.devinhouse.devinhortifrutiapi.model.Usuario;
@@ -83,7 +83,7 @@ public class UsuarioService {
         verificationAge(usuarioAge);
 
 
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        //BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
         Usuario newUser = new Usuario();
         newUser.setLogin(usuarioDTO.getLogin());

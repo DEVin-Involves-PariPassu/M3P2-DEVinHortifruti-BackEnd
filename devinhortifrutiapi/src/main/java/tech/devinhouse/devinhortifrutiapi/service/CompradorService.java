@@ -8,6 +8,7 @@ import tech.devinhouse.devinhortifrutiapi.repository.CompradorRepository;
 import tech.devinhouse.devinhortifrutiapi.service.exception.RequiredFieldMissingException;
 
 import javax.persistence.EntityExistsException;
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.Optional;
 
@@ -22,6 +23,11 @@ public class CompradorService {
         Comprador comprador = validateAndConvertDto(compradorDTO);
         comprador = compradorRepository.save(comprador);
         return comprador.getId();
+    }
+
+    public Comprador findById(Long id_comprador) {
+        return this.compradorRepository.findById(id_comprador).orElseThrow(() ->
+                new EntityNotFoundException("Não existe Comprador com este ID"));
     }
 
     private Comprador validateAndConvertDto(CompradorDTO compradorDTO){
@@ -76,4 +82,39 @@ public class CompradorService {
             throw new EntityExistsException("O e-mail " + compradorDTO.getEmail() + " já possui cadastro!");
         }
     }
+
+    @Transactional
+    public Long updateDoPut(Long id_comprador,
+                            CompradorDTO compradorDTO) {
+        Comprador comprador = validationsPut(id_comprador, compradorDTO);
+        comprador.setNome(compradorDTO.getNome());
+        comprador.setEmail(compradorDTO.getCpf());
+        comprador.setTelefone(compradorDTO.getTelefone());
+        comprador.setCpf(compradorDTO.getCpf());
+
+        return id_comprador;
+    }
+
+    public Comprador validationsPut(Long id_comprador,
+                                    CompradorDTO compradorDTO) {
+        Comprador comprador = findById(id_comprador);
+
+        existsCpf(compradorDTO);
+        existsEmail(compradorDTO);
+        existsTelefone(compradorDTO);
+        existsNome(compradorDTO);
+        isUniqueCpf(compradorDTO);
+        isUniqueEmail(compradorDTO);
+
+        return  comprador;
+    }
+
+    public Comprador getComprador(String cpf) {
+        Optional<Comprador> compradorOpt = this.compradorRepository.findByCpf(cpf);
+        if (compradorOpt.isEmpty()) {
+            throw new EntityNotFoundException("Comprador não encontrado.");
+        }
+        return compradorOpt.get();
+    }
+  
 }
