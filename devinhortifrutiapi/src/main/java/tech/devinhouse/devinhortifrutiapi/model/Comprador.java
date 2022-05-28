@@ -2,7 +2,7 @@ package tech.devinhouse.devinhortifrutiapi.model;
 
 import javax.persistence.*;
 
-@Entity(name = "comprador")
+@Entity(name = "compradores")
 public class Comprador {
 
     @Id
