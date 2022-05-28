@@ -1,7 +1,6 @@
 package tech.devinhouse.devinhortifrutiapi.dto;
 
 import javax.validation.constraints.NotNull;
-
 import java.math.BigDecimal;
 
 public class ProdutoDTO {
@@ -71,4 +70,15 @@ public class ProdutoDTO {
         isActive = active;
     }
 
+    @Override
+    public String toString() {
+        return "ProdutoDTO{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", descricao='" + descricao + '\'' +
+                ", urlFoto='" + urlFoto + '\'' +
+                ", precoAtual=" + precoAtual +
+                ", isActive=" + isActive +
+                '}';
+    }
 }

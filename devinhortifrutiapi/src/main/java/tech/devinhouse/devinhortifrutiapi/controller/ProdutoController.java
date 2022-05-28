@@ -3,14 +3,11 @@ package tech.devinhouse.devinhortifrutiapi.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import tech.devinhouse.devinhortifrutiapi.dto.ProdutoDTO;
 import tech.devinhouse.devinhortifrutiapi.service.ProdutoService;
-
-import javax.validation.Valid;
+import javax.validation.*;
+import javax.validation.constraints.NotNull;
 
 @RestController
 @RequestMapping("/produtos")
@@ -25,6 +22,15 @@ public class ProdutoController {
     ){
         Long produtoId = produtoService.adicionaProduto(produtoDTO);
         return new ResponseEntity<>(produtoId, HttpStatus.CREATED);
+    }
+
+
+    @PutMapping(value = "/{id_produto}")
+    public ResponseEntity<Long> putProduto(@NotNull @PathVariable Long id_produto,
+                                    @RequestBody ProdutoDTO produtoDTO) {
+
+        produtoService.atualizar(id_produto, produtoDTO);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }
