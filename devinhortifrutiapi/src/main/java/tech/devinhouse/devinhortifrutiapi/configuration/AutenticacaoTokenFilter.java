@@ -2,6 +2,7 @@ package tech.devinhouse.devinhortifrutiapi.configuration;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.filter.OncePerRequestFilter;
 import tech.devinhouse.devinhortifrutiapi.model.Usuario;
 import tech.devinhouse.devinhortifrutiapi.repository.UsuarioRepository;
 
@@ -11,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class AutenticacaoTokenFilter extends OnePerRequestFilter {
+public class AutenticacaoTokenFilter extends OncePerRequestFilter {
 
     private TokenService tokenService;
     private UsuarioRepository usuarioRepository;
@@ -40,7 +41,7 @@ public class AutenticacaoTokenFilter extends OnePerRequestFilter {
         Long idUsuario = tokenService.getUsuarioPorId(token);
         Usuario usuario = usuarioRepository.findById(idUsuario).get();
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(usuario, null, usuarioRepository.getAutoridades());
+                new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
     }
 
