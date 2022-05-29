@@ -1,6 +1,8 @@
 package tech.devinhouse.devinhortifrutiapi.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 
@@ -38,6 +40,7 @@ public class Usuario {
         this.login = login;
     }
 
+    @JsonIgnore
     public String getSenha() {
         return senha;
     }
