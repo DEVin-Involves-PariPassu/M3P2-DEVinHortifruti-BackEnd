@@ -1,8 +1,8 @@
 package tech.devinhouse.devinhortifrutiapi.model;
 
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -42,6 +42,7 @@ public class Usuario implements UserDetails {
         this.login = login;
     }
 
+    @JsonIgnore
     public String getSenha() {
         return senha;
     }
