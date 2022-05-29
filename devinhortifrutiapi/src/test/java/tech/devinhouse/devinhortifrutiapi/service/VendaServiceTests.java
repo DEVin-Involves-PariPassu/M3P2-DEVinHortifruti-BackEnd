@@ -1,6 +1,5 @@
 package tech.devinhouse.devinhortifrutiapi.service;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,7 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
 import tech.devinhouse.devinhortifrutiapi.dto.*;
 import tech.devinhouse.devinhortifrutiapi.model.*;
 import tech.devinhouse.devinhortifrutiapi.repository.*;
@@ -23,6 +21,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 public class VendaServiceTests {
@@ -52,12 +51,6 @@ public class VendaServiceTests {
     private static final Long ID_VENDA = 1L;
 
 
-    //@Mock
-    //ItemVendaRepository itemVendaRepository;
-
-    //@Mock
-    //ProdutoRepository produtoRepository;
-
     @Mock
     VendaRepository vendaRepository;
 
@@ -76,6 +69,7 @@ public class VendaServiceTests {
     private Usuario usuario;
     private Comprador comprador;
     private Venda novaVenda;
+    private ItemVenda novoItemVenda;
     private List<ItemVenda> itemVenda;
     private VendaGetDto vendaGet;
     private ItemVendaGetDto itemVendaGetDto;
@@ -83,9 +77,6 @@ public class VendaServiceTests {
     private VendaPostDto vendaPost;
     private ItemVendaPostDto itemVendaPostDto;
     private List<ItemVendaPostDto> itemVendaPostLista;
-
-
-    //private Optional<Venda> opcionalVenda;
 
 
     @BeforeEach
@@ -104,7 +95,6 @@ public class VendaServiceTests {
         usuario.setEmail(EMAIL_VENDEDOR);
         usuario.setDtNascimento(LocalDate.parse(NASCIMENTO, dataFormatada));
         usuario.setAdmin(true);
-        usuarioRepository.save(usuario);
 
         comprador = new Comprador();
         comprador.setId(ID_COMPRADOR);
@@ -112,7 +102,6 @@ public class VendaServiceTests {
         comprador.setEmail(EMAIL_COMPRADOR);
         comprador.setNome(NOME_CLIENTE);
         comprador.setTelefone(TELEFONE);
-        //compradorRepository.save(comprador);
 
         itemVendaGetLista = new ArrayList<>();
         vendaGet = new VendaGetDto();
@@ -126,6 +115,7 @@ public class VendaServiceTests {
         itemVendaGetDto.setQuantidade(12);
         itemVendaGetDto.setNome("uva");
         itemVendaGetDto.setSubtotal(BigDecimal.valueOf(399.90));
+        itemVendaGetLista.add(itemVendaGetDto);
         vendaGet.setItens(itemVendaGetLista);
 
         itemVenda = new ArrayList<>();
@@ -142,9 +132,15 @@ public class VendaServiceTests {
         novaVenda.setBairro(BAIRRO);
         novaVenda.setComplemento(COMPLEMENTO);
         novaVenda.setDataEntrega(LocalDate.parse(DATA_ENTREGA,dataFormatada));
+        novoItemVenda = new ItemVenda();
+        novoItemVenda.setVenda(novaVenda);
+        novoItemVenda.setId(1L);
+        novoItemVenda.setProduto(new Produto(1L,"uva", "Uva grada", "url", new BigDecimal(33.325) , true  ));
+        novoItemVenda.setPrecoUnitario(BigDecimal.valueOf(33.325));
+        novoItemVenda.setQuantidade(12);
+        itemVenda.add(novoItemVenda);
         novaVenda.setItens(itemVenda);
         novaVenda.setVendaCancelada(false);
-        //vendaRepository.save(novaVenda);
 
         itemVendaPostLista = new ArrayList<>();
         vendaPost = new VendaPostDto();
@@ -163,7 +159,6 @@ public class VendaServiceTests {
         itemVendaPostDto.setQuantidade(12);
         itemVendaPostLista.add(itemVendaPostDto);
         vendaPost.setItens(itemVendaPostLista);
-        //vendaService.salvarVenda(vendaPost);
 
     }
 
@@ -193,6 +188,7 @@ public class VendaServiceTests {
         when(usuarioRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(usuario));
         when(compradorRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(comprador));
         when(vendaService.salvarVenda(vendaPost)).thenReturn(novaVenda);
+        when(vendaRepository.save(any())).thenReturn(novaVenda);
 
         usuarioRepository.save(usuario);
         compradorRepository.save(comprador);
