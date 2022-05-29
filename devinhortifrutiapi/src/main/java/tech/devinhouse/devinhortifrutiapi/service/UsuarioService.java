@@ -3,12 +3,14 @@ package tech.devinhouse.devinhortifrutiapi.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 // import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tech.devinhouse.devinhortifrutiapi.dto.UsuarioDTO;
 import tech.devinhouse.devinhortifrutiapi.model.Usuario;
 import tech.devinhouse.devinhortifrutiapi.repository.UsuarioRepository;
 import tech.devinhouse.devinhortifrutiapi.service.exception.RequiredFieldMissingException;
 import tech.devinhouse.devinhortifrutiapi.service.exception.UserIsUnderAgeException;
+import tech.devinhouse.devinhortifrutiapi.util.GeradorDeSenha;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
@@ -19,7 +21,7 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 
-
+@Service
 public class UsuarioService {
 
     @Autowired
@@ -44,11 +46,16 @@ public class UsuarioService {
                 new EntityNotFoundException("Usuário não encontrado."));
     }
 
-    public Long salvar(UsuarioDTO usuarioDTO) {
-        Usuario newUser = validateUser(usuarioDTO);
-        UsuarioRepository.save(newUser);
-        return newUser.getId();
+    public Usuario salvar(UsuarioDTO usuarioDTO) {
+        Usuario usuario = validateUser(usuarioDTO);
+        return UsuarioRepository.save(usuario);
     }
+
+    public Usuario salvarUsuarioComSenha(Usuario usuario, String senha) {
+        usuario.setSenha(senha);
+        return UsuarioRepository.save(usuario);
+    }
+
 
     public void atualizar(Long idUser, UsuarioDTO usuarioDTO) {
         Usuario usuario = updateUser(idUser, usuarioDTO);
@@ -57,7 +64,7 @@ public class UsuarioService {
     }
 
     public Usuario updateUser(Long idUser, UsuarioDTO usuarioDTO) {
-        isUniqueNameUser(usuarioDTO);
+        isUniqueEmailUser(usuarioDTO);
         isUniqueLoginUser(usuarioDTO);
         LocalDate dtNascimento = verificationDate(String.valueOf(usuarioDTO));
         verificationAge(dtNascimento);
@@ -77,9 +84,11 @@ public class UsuarioService {
         existsNome(usuarioDTO);
         existsLogin(usuarioDTO);
         existsDtNascimento(usuarioDTO);
-        isUniqueNameUser(usuarioDTO);
+        existsIsAdmin(usuarioDTO);
+        existsEmail(usuarioDTO);
+        isUniqueEmailUser(usuarioDTO);
         isUniqueLoginUser(usuarioDTO);
-        LocalDate usuarioAge = verificationDate(String.valueOf(usuarioDTO));
+        LocalDate usuarioAge = verificationDate(usuarioDTO.getDtNascimento());
         verificationAge(usuarioAge);
 
 
@@ -89,6 +98,8 @@ public class UsuarioService {
         newUser.setLogin(usuarioDTO.getLogin());
         newUser.setNome(usuarioDTO.getNome());
         newUser.setDtNascimento(usuarioAge);
+        newUser.setEmail(usuarioDTO.getEmail());
+        newUser.setAdmin(usuarioDTO.getIsAdmin());
         newUser = UsuarioRepository.save(newUser);
 
         return newUser;
@@ -97,6 +108,18 @@ public class UsuarioService {
     private void existsNome(UsuarioDTO usuarioDTO) {
         if (usuarioDTO.getNome() == null) {
             throw new RequiredFieldMissingException("O campo Nome é obrigatório");
+        }
+    }
+
+    private void existsIsAdmin(UsuarioDTO usuarioDTO) {
+        if (usuarioDTO.getIsAdmin() == null) {
+            throw new RequiredFieldMissingException("O campo IsAdmin é obrigatório");
+        }
+    }
+
+    private void existsEmail(UsuarioDTO usuarioDTO) {
+        if (usuarioDTO.getEmail() == null) {
+            throw new RequiredFieldMissingException("O campo email é obrigatório");
         }
     }
 
@@ -137,10 +160,10 @@ public class UsuarioService {
         }
     }
 
-    private void isUniqueNameUser(UsuarioDTO usuario) {
-        Optional<Usuario> optionalUser = UsuarioRepository.findUsuarioByNome(usuario.getNome());
+    private void isUniqueEmailUser(UsuarioDTO usuario) {
+        Optional<Usuario> optionalUser = UsuarioRepository.findUsuarioByEmail(usuario.getNome());
         if (optionalUser.isPresent()) {
-            throw new EntityExistsException("Já existe este nome de usuário cadastrado: " + usuario.getNome());
+            throw new EntityExistsException("Já existe este email de usuário cadastrado: " + usuario.getEmail());
         }
     }
 
