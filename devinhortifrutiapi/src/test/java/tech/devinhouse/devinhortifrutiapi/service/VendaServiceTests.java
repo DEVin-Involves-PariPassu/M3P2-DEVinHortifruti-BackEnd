@@ -33,8 +33,8 @@ public class VendaServiceTests {
     private static final BigDecimal TOTAL_VENDA = BigDecimal.valueOf(399.90);
     private static final String ENDERECO = "Rua Comprador, 10";
 
-    private static final Long ID_COMPRADOR = 1l;
-    private static final Long ID_VENDEDOR = 1l;
+    private static final Long ID_COMPRADOR = 1L;
+    private static final Long ID_VENDEDOR = 1L;
     private static final String EMAIL_COMPRADOR = "comprador@gmail.com";
     private static final String SIGLA_ESTADO = "PR";
     private static final String CEP = "83607056";
@@ -50,14 +50,14 @@ public class VendaServiceTests {
     private static final String NASCIMENTO = "11/10/1996";
     private static final String CPF = "12345678910";
 
-    private static final Long ID_VENDA = null;
+    private static final Long ID_VENDA = 1L;
 
 
-    @Mock
-    ItemVendaRepository itemVendaRepository;
+    //@Mock
+    //ItemVendaRepository itemVendaRepository;
 
-    @Mock
-    ProdutoRepository produtoRepository;
+    //@Mock
+    //ProdutoRepository produtoRepository;
 
     @Mock
     VendaRepository vendaRepository;
@@ -68,16 +68,26 @@ public class VendaServiceTests {
     @Mock
     UsuarioRepository usuarioRepository;
 
-    @InjectMocks
+    @Mock
     private ItemVendaService itemVendaService;
 
     @InjectMocks
     private VendaService vendaService = new VendaService();
 
-    private ItemVendaPostDto itemVendaPostDto;
+    private Usuario usuario;
+    private Comprador comprador;
+    private Venda novaVenda;
+    private List<ItemVenda> itemVenda;
+    private VendaGetDto vendaGet;
     private ItemVendaGetDto itemVendaGetDto;
-    private Venda venda;
-    private Optional<Venda> opcionalVenda;
+    private List<ItemVendaGetDto> itemVendaGetLista;
+    private VendaPostDto vendaPost;
+    private ItemVendaPostDto itemVendaPostDto;
+    private List<ItemVendaPostDto> itemVendaPostLista;
+
+
+    //private Optional<Venda> opcionalVenda;
+
 
     @BeforeEach
     public void setup(){
@@ -88,7 +98,8 @@ public class VendaServiceTests {
     private void startVenda() {
         DateTimeFormatter dataFormatada = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        Usuario usuario = new Usuario();
+        usuario = new Usuario();
+        usuario.setId(ID_VENDEDOR);
         usuario.setNome(NOME_VENDEDOR);
         usuario.setLogin(LOGIN_VENDEDOR);
         usuario.setEmail(EMAIL_VENDEDOR);
@@ -96,7 +107,7 @@ public class VendaServiceTests {
         usuario.setAdmin(true);
         usuarioRepository.save(usuario);
 
-        Comprador comprador = new Comprador();
+        comprador = new Comprador();
         comprador.setId(ID_COMPRADOR);
         comprador.setCpf(CPF);
         comprador.setEmail(EMAIL_COMPRADOR);
@@ -104,22 +115,22 @@ public class VendaServiceTests {
         comprador.setTelefone(TELEFONE);
         compradorRepository.save(comprador);
 
-        List<ItemVendaGetDto> itemVendaGetLista = new ArrayList<>();
-        VendaGetDto vendaGet = new VendaGetDto();
+        itemVendaGetLista = new ArrayList<>();
+        vendaGet = new VendaGetDto();
         vendaGet.setNomeCliente(NOME_CLIENTE);
         vendaGet.setEmail(EMAIL_CLIENTE);
         vendaGet.setTelefone(TELEFONE);
         vendaGet.setTotalVenda(TOTAL_VENDA);
         vendaGet.setEndereco(ENDERECO);
-        ItemVendaGetDto itemVendaGetDto = new ItemVendaGetDto();
+        itemVendaGetDto = new ItemVendaGetDto();
         itemVendaGetDto.setUrlFoto("url");
         itemVendaGetDto.setQuantidade(12);
         itemVendaGetDto.setNome("uva");
         itemVendaGetDto.setSubtotal(BigDecimal.valueOf(399.90));
         vendaGet.setItens(itemVendaGetLista);
 
-        List<ItemVenda> itemVenda = new ArrayList<>();
-        Venda novaVenda = new Venda();
+        itemVenda = new ArrayList<>();
+        novaVenda = new Venda();
         novaVenda.setId(ID_VENDA);
         novaVenda.setComprador(comprador);
         novaVenda.setVendedor(usuario);
@@ -134,9 +145,10 @@ public class VendaServiceTests {
         novaVenda.setDataEntrega(LocalDate.parse(DATA_ENTREGA,dataFormatada));
         novaVenda.setItens(itemVenda);
         novaVenda.setVendaCancelada(false);
+        vendaRepository.save(novaVenda);
 
-        List<ItemVendaPostDto> itemVendaPostLista = new ArrayList<>();
-        VendaPostDto vendaPost = new VendaPostDto();
+        itemVendaPostLista = new ArrayList<>();
+        vendaPost = new VendaPostDto();
         vendaPost.setIdComprador(ID_COMPRADOR);
         vendaPost.setIdVendedor(ID_VENDEDOR);
         vendaPost.setSiglaEstado(SIGLA_ESTADO);
@@ -146,10 +158,11 @@ public class VendaServiceTests {
         vendaPost.setBairro(BAIRRO);
         vendaPost.setComplemento(COMPLEMENTO);
         vendaPost.setDataEntrega(DATA_ENTREGA);
-        ItemVendaPostDto itemVendaPostDto = new ItemVendaPostDto();
+        itemVendaPostDto = new ItemVendaPostDto();
         itemVendaPostDto.setIdProduto(2l);
         itemVendaPostDto.setPrecoUnitario(BigDecimal.valueOf(399.90));
         itemVendaPostDto.setQuantidade(12);
+        itemVendaPostLista.add(itemVendaPostDto);
         vendaPost.setItens(itemVendaPostLista);
         vendaService.salvarVenda(vendaPost);
 
@@ -158,15 +171,25 @@ public class VendaServiceTests {
     @Test
     @DisplayName("Buscar venda pelo Id")
     public void deveRetornarUmaVendaQuandoPassarUmIdValido(){
-        when(vendaRepository.findById(Mockito.anyLong())).thenReturn(opcionalVenda);
+        when(vendaRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(novaVenda));
 
-//        Optional<Venda> response = vendaRepository.findById(ID);
-//        VendaGetDto response = vendaService.listarPorId(novaVenda);
-//        assertNotNull(response);
-//        assertEquals(VendaGetDto.class, response.getClass());
+        VendaGetDto response = vendaService.listarPorId(novaVenda.getId());
+        assertNotNull(response);
+        assertEquals(VendaGetDto.class, response.getClass());
 //        assertEquals(ID, response.getId());
 //        Assertions.assertEquals(NOME, response.getNome());
 //        Assertions.assertEquals(DESCRICAO, response.getDescricao());
+    }
+
+    @Test
+    @DisplayName("Salvar nova venda")
+    public void deveSalvarUmaVendaQuandoPassarOsDadosDoCompradorEOsItensDaCompra(){
+        when(vendaService.salvarVenda(vendaPost)).thenReturn(novaVenda);
+
+        Venda response = vendaService.salvarVenda(vendaPost);
+
+        assertNotNull(response);
+        assertEquals(Venda.class, response.getClass());
     }
 }
 
