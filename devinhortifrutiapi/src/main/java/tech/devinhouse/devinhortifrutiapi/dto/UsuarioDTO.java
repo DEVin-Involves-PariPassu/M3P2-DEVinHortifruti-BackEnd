@@ -15,8 +15,8 @@ public class UsuarioDTO {
     @NotBlank(message = "Informe o email")
     private String email;
 
-    @NotNull(message = "Informe a data de nascimento no formato dd/MM/yyyy")
-    private LocalDate dtNascimento;
+    @NotBlank(message = "Informe a data de nascimento no formato dd/MM/yyyy")
+    private String dtNascimento;
 
     @NotNull(message = "Informe se o usuario é Administrador")
     private Boolean isAdmin;
@@ -45,19 +45,19 @@ public class UsuarioDTO {
         this.email = email;
     }
 
-    public LocalDate getDtNascimento() {
+    public String getDtNascimento() {
         return dtNascimento;
     }
 
-    public void setDtNascimento(LocalDate dtNascimento) {
+    public void setDtNascimento(String dtNascimento) {
         this.dtNascimento = dtNascimento;
     }
 
-    public Boolean getAdmin() {
+    public Boolean getIsAdmin() {
         return isAdmin;
     }
 
-    public void setAdmin(Boolean admin) {
+    public void setIsAdmin(Boolean admin) {
         isAdmin = admin;
     }
 
