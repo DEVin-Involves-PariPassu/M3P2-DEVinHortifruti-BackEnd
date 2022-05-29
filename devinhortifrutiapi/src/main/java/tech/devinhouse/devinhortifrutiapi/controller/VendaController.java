@@ -35,7 +35,7 @@ public class VendaController {
 
         String valorTotalDaCompra = NumberFormat.getCurrencyInstance().format(novaVenda.getTotalVenda());
 
-        String mensagem = String.format("Prezado %s, sua compra foi realizada com sucesso! %n" +
+        String mensagem = String.format("Prezado(a) %s, sua compra foi realizada com sucesso! %n" +
                         "Valor total da compra: %s %n" +
                         "O vendador está preparando seu pedido e em breve estará a caminho!",
                 novaVenda.getComprador().getNome(), valorTotalDaCompra
