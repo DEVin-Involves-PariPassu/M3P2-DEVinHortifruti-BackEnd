@@ -19,7 +19,7 @@ public class TokenService {
     private String secret;
 
     public String gerarToken(Authentication authentication){
-        Usuario user = (Usuario) authentication.getPrincipal();
+        Usuario usuario = (Usuario) authentication.getPrincipal();
         Date hoje = new Date();
         Date expiracao = new Date();
 
@@ -27,14 +27,14 @@ public class TokenService {
 
         return Jwts.builder()
                 .setIssuer("Security JWT")
-                .setSubject(String.valueOf(user.getId()))
+                .setSubject(String.valueOf(usuario.getId()))
                 .setIssuedAt(hoje)
                 .setExpiration(expiracao)
                 .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }
 
-    public boolean TokenValido(String token){
+    public boolean tokenValido(String token){
         try{
             Jwts.parser().setSigningKey(this.secret).parseClaimsJws(token);
             return true;
