@@ -1,4 +1,172 @@
 package tech.devinhouse.devinhortifrutiapi.service;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import tech.devinhouse.devinhortifrutiapi.dto.*;
+import tech.devinhouse.devinhortifrutiapi.model.*;
+import tech.devinhouse.devinhortifrutiapi.repository.*;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.when;
+
 public class VendaServiceTests {
+
+    private static final String NOME_CLIENTE = "Ana";
+    private static final String EMAIL_CLIENTE = "comprador@gmail.com";
+    private static final String TELEFONE = "+5548912345678";
+    private static final BigDecimal TOTAL_VENDA = BigDecimal.valueOf(399.90);
+    private static final String ENDERECO = "Rua Comprador, 10";
+
+    private static final Long ID_COMPRADOR = 1l;
+    private static final Long ID_VENDEDOR = 1l;
+    private static final String EMAIL_COMPRADOR = "comprador@gmail.com";
+    private static final String SIGLA_ESTADO = "PR";
+    private static final String CEP = "83607056";
+    private static final String CIDADE = "Curitiba";
+    private static final String LOGRADOURO = "Rua tal, 56";
+    private static final String BAIRRO = "Vila Elizabeth";
+    private static final String COMPLEMENTO = "Rua sem saida";
+    private static final String DATA_ENTREGA = "12/10/2022";
+
+    private static final String NOME_VENDEDOR = "Brenda";
+    private static final String EMAIL_VENDEDOR = "vendedor@gmail.com";
+    private static final String LOGIN_VENDEDOR = "brenda";
+    private static final String NASCIMENTO = "11/10/1996";
+    private static final String CPF = "12345678910";
+
+    private static final Long ID_VENDA = null;
+
+
+    @Mock
+    ItemVendaRepository itemVendaRepository;
+
+    @Mock
+    ProdutoRepository produtoRepository;
+
+    @Mock
+    VendaRepository vendaRepository;
+
+    @Mock
+    CompradorRepository compradorRepository;
+
+    @Mock
+    UsuarioRepository usuarioRepository;
+
+    @InjectMocks
+    private ItemVendaService itemVendaService;
+
+    @InjectMocks
+    private VendaService vendaService = new VendaService();
+
+    private ItemVendaPostDto itemVendaPostDto;
+    private ItemVendaGetDto itemVendaGetDto;
+    private Venda venda;
+    private Optional<Venda> opcionalVenda;
+
+    @BeforeEach
+    public void setup(){
+        MockitoAnnotations.openMocks(this);
+        startVenda();
+    }
+
+    private void startVenda() {
+        DateTimeFormatter dataFormatada = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        Usuario usuario = new Usuario();
+        usuario.setNome(NOME_VENDEDOR);
+        usuario.setLogin(LOGIN_VENDEDOR);
+        usuario.setEmail(EMAIL_VENDEDOR);
+        usuario.setDtNascimento(LocalDate.parse(NASCIMENTO, dataFormatada));
+        usuario.setAdmin(true);
+        usuarioRepository.save(usuario);
+
+        Comprador comprador = new Comprador();
+        comprador.setId(ID_COMPRADOR);
+        comprador.setCpf(CPF);
+        comprador.setEmail(EMAIL_COMPRADOR);
+        comprador.setNome(NOME_CLIENTE);
+        comprador.setTelefone(TELEFONE);
+        compradorRepository.save(comprador);
+
+        List<ItemVendaGetDto> itemVendaGetLista = new ArrayList<>();
+        VendaGetDto vendaGet = new VendaGetDto();
+        vendaGet.setNomeCliente(NOME_CLIENTE);
+        vendaGet.setEmail(EMAIL_CLIENTE);
+        vendaGet.setTelefone(TELEFONE);
+        vendaGet.setTotalVenda(TOTAL_VENDA);
+        vendaGet.setEndereco(ENDERECO);
+        ItemVendaGetDto itemVendaGetDto = new ItemVendaGetDto();
+        itemVendaGetDto.setUrlFoto("url");
+        itemVendaGetDto.setQuantidade(12);
+        itemVendaGetDto.setNome("uva");
+        itemVendaGetDto.setSubtotal(BigDecimal.valueOf(399.90));
+        vendaGet.setItens(itemVendaGetLista);
+
+        List<ItemVenda> itemVenda = new ArrayList<>();
+        Venda novaVenda = new Venda();
+        novaVenda.setId(ID_VENDA);
+        novaVenda.setComprador(comprador);
+        novaVenda.setVendedor(usuario);
+        novaVenda.setDataVenda(LocalDateTime.now());
+        novaVenda.setTotalVenda(TOTAL_VENDA);
+        novaVenda.setCep(CEP);
+        novaVenda.setSiglaEstado(SIGLA_ESTADO);
+        novaVenda.setCidade(CIDADE);
+        novaVenda.setLogradouro(LOGRADOURO);
+        novaVenda.setBairro(BAIRRO);
+        novaVenda.setComplemento(COMPLEMENTO);
+        novaVenda.setDataEntrega(LocalDate.parse(DATA_ENTREGA,dataFormatada));
+        novaVenda.setItens(itemVenda);
+        novaVenda.setVendaCancelada(false);
+
+        List<ItemVendaPostDto> itemVendaPostLista = new ArrayList<>();
+        VendaPostDto vendaPost = new VendaPostDto();
+        vendaPost.setIdComprador(ID_COMPRADOR);
+        vendaPost.setIdVendedor(ID_VENDEDOR);
+        vendaPost.setSiglaEstado(SIGLA_ESTADO);
+        vendaPost.setCep(CEP);
+        vendaPost.setCidade(CIDADE);
+        vendaPost.setLogradouro(LOGRADOURO);
+        vendaPost.setBairro(BAIRRO);
+        vendaPost.setComplemento(COMPLEMENTO);
+        vendaPost.setDataEntrega(DATA_ENTREGA);
+        ItemVendaPostDto itemVendaPostDto = new ItemVendaPostDto();
+        itemVendaPostDto.setIdProduto(2l);
+        itemVendaPostDto.setPrecoUnitario(BigDecimal.valueOf(399.90));
+        itemVendaPostDto.setQuantidade(12);
+        vendaPost.setItens(itemVendaPostLista);
+        vendaService.salvarVenda(vendaPost);
+
+    }
+
+    @Test
+    @DisplayName("Buscar venda pelo Id")
+    public void deveRetornarUmaVendaQuandoPassarUmIdValido(){
+        when(vendaRepository.findById(Mockito.anyLong())).thenReturn(opcionalVenda);
+
+//        Optional<Venda> response = vendaRepository.findById(ID);
+//        VendaGetDto response = vendaService.listarPorId(novaVenda);
+//        assertNotNull(response);
+//        assertEquals(VendaGetDto.class, response.getClass());
+//        assertEquals(ID, response.getId());
+//        Assertions.assertEquals(NOME, response.getNome());
+//        Assertions.assertEquals(DESCRICAO, response.getDescricao());
+    }
 }
+
