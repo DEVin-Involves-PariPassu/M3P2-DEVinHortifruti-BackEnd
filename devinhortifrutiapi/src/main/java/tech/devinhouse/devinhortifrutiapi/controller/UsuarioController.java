@@ -49,8 +49,20 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarios);
     }
 
+    @GetMapping("/{id_usuario}")
+    public ResponseEntity<Usuario> getPorId (
+            //@RequestHeader("Authorization") String auth,
+            @PathVariable(name = "id_usuario") Long idUsuario) {
+
+        Usuario usuario = service.listarPorId(idUsuario);
+
+        return ResponseEntity.ok(usuario);
+    }
+
     @PostMapping
-    public ResponseEntity<Long> post(@Valid @RequestBody UsuarioDTO usuarioDTO) {
+    public ResponseEntity<Long> post(
+            //@RequestHeader("Authorization") String auth,
+            @Valid @RequestBody UsuarioDTO usuarioDTO) {
         Usuario usuario = service.salvar(usuarioDTO);
         String senhaTextoPlano = GeradorDeSenha.generatePassayPassword();
         // bcript senha antes de salvar no banco

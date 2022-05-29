@@ -10,7 +10,6 @@ import tech.devinhouse.devinhortifrutiapi.model.Usuario;
 import tech.devinhouse.devinhortifrutiapi.repository.UsuarioRepository;
 import tech.devinhouse.devinhortifrutiapi.service.exception.RequiredFieldMissingException;
 import tech.devinhouse.devinhortifrutiapi.service.exception.UserIsUnderAgeException;
-import tech.devinhouse.devinhortifrutiapi.util.GeradorDeSenha;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
@@ -25,12 +24,12 @@ import java.util.Optional;
 public class UsuarioService {
 
     @Autowired
-    private UsuarioRepository UsuarioRepository;   
+    private UsuarioRepository usuarioRepository;
 
     public List<Usuario> listar(String nome, String dtNascimentoMinStr, String dtNascimentoMaxStr) {
         LocalDate dtNascimentoMin = verificationDate(dtNascimentoMinStr);
         LocalDate dtNascimentoMax = verificationDate(dtNascimentoMaxStr);
-        return UsuarioRepository.findAll(
+        return usuarioRepository.findAll(
                 Specification.where(
                         SpecificationsUsuario.nome(nome).and(
                                 SpecificationsUsuario.dtNascimentoMin(dtNascimentoMin).and(
@@ -41,26 +40,26 @@ public class UsuarioService {
         );
     }
 
-    public void patchPermissao(Long idUser, String tipoPermissao) {
-        Usuario usuario = UsuarioRepository.findById(idUser).orElseThrow(() ->
-                new EntityNotFoundException("Usuário não encontrado."));
+    public Usuario listarPorId(Long id){
+        return usuarioRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
     }
+
 
     public Usuario salvar(UsuarioDTO usuarioDTO) {
         Usuario usuario = validateUser(usuarioDTO);
-        return UsuarioRepository.save(usuario);
+        return usuarioRepository.save(usuario);
     }
 
     public Usuario salvarUsuarioComSenha(Usuario usuario, String senha) {
         usuario.setSenha(senha);
-        return UsuarioRepository.save(usuario);
+        return usuarioRepository.save(usuario);
     }
 
 
     public void atualizar(Long idUser, UsuarioDTO usuarioDTO) {
         Usuario usuario = updateUser(idUser, usuarioDTO);
 
-        UsuarioRepository.save(usuario);
+        usuarioRepository.save(usuario);
     }
 
     public Usuario updateUser(Long idUser, UsuarioDTO usuarioDTO) {
@@ -69,7 +68,7 @@ public class UsuarioService {
         LocalDate dtNascimento = verificationDate(String.valueOf(usuarioDTO));
         verificationAge(dtNascimento);
 
-        Usuario usuario = UsuarioRepository.findById(idUser).orElseThrow(
+        Usuario usuario = usuarioRepository.findById(idUser).orElseThrow(
                 () -> new EntityNotFoundException("Id de usuário inexistente.")
         );
         usuario.setLogin(usuarioDTO.getLogin());
@@ -100,7 +99,7 @@ public class UsuarioService {
         newUser.setDtNascimento(usuarioAge);
         newUser.setEmail(usuarioDTO.getEmail());
         newUser.setAdmin(usuarioDTO.getIsAdmin());
-        newUser = UsuarioRepository.save(newUser);
+        newUser = usuarioRepository.save(newUser);
 
         return newUser;
     }
@@ -154,14 +153,14 @@ public class UsuarioService {
     }
 
     private void isUniqueLoginUser(UsuarioDTO usuario) {
-        Optional<Usuario> optionalUser = UsuarioRepository.findUsuarioByLogin(usuario.getLogin());
+        Optional<Usuario> optionalUser = usuarioRepository.findUsuarioByLogin(usuario.getLogin());
         if (optionalUser.isPresent()) {
             throw new EntityExistsException("Já existe um usuário cadastrado com este login: " + usuario.getLogin());
         }
     }
 
     private void isUniqueEmailUser(UsuarioDTO usuario) {
-        Optional<Usuario> optionalUser = UsuarioRepository.findUsuarioByEmail(usuario.getNome());
+        Optional<Usuario> optionalUser = usuarioRepository.findUsuarioByEmail(usuario.getNome());
         if (optionalUser.isPresent()) {
             throw new EntityExistsException("Já existe este email de usuário cadastrado: " + usuario.getEmail());
         }
@@ -169,15 +168,15 @@ public class UsuarioService {
 
     @Transactional
     public void delete(Long id){
-        Usuario usuarioEntity = UsuarioRepository.findById(id).orElseThrow(
+        Usuario usuarioEntity = usuarioRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("User with id " + id + " was not found."));
 
-        UsuarioRepository.delete(usuarioEntity);
+        usuarioRepository.delete(usuarioEntity);
     }
 
     @Transactional
     public Usuario findById(Long id){
-        return UsuarioRepository.findUsuarioById(id).orElseThrow(
+        return usuarioRepository.findUsuarioById(id).orElseThrow(
                 () -> new EntityNotFoundException("User with id " + id + " was not found." )
         );
     }
