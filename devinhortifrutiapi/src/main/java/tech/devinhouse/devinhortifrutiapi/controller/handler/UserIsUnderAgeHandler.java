@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class UserIsUnderAgeHandler {
     @ExceptionHandler({ UserIsUnderAgeException.class })
-    public ResponseEntity<ErrorResponse> userIsUnderAge(UserIsUnderAgeException e) {
+    public ResponseEntity<ErrorResponse> usuarioIsUnderAge(UserIsUnderAgeException e) {
 
         ErrorResponse error = new ErrorResponse();
         error.setCode(HttpStatus.BAD_REQUEST.value());
