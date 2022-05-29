@@ -2,9 +2,11 @@ package tech.devinhouse.devinhortifrutiapi.dto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 
 public class UsuarioDTO {
+
+    @NotNull(message = "Informe o ID")
+    private Long id;
 
     @NotBlank(message = "Informe o nome")
     private String nome;
@@ -27,6 +29,14 @@ public class UsuarioDTO {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getLogin() {

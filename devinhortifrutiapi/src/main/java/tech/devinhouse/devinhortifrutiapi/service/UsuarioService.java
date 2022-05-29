@@ -98,7 +98,7 @@ public class UsuarioService {
         newUser.setNome(usuarioDTO.getNome());
         newUser.setDtNascimento(usuarioAge);
         newUser.setEmail(usuarioDTO.getEmail());
-        newUser.setAdmin(usuarioDTO.getIsAdmin());
+        newUser.setIsAdmin(usuarioDTO.getIsAdmin());
         newUser = usuarioRepository.save(newUser);
 
         return newUser;
