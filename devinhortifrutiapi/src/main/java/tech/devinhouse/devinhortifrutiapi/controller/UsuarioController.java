@@ -54,6 +54,9 @@ public class UsuarioController {
             //@RequestHeader("Authorization") String auth,
             @PathVariable(name = "id_usuario") Long idUsuario) {
 
+//        if(!usuarioEhAdmin(auth)){
+//            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+//        }
         Usuario usuario = service.listarPorId(idUsuario);
 
         return ResponseEntity.ok(usuario);
@@ -102,5 +105,18 @@ public class UsuarioController {
 
         return ResponseEntity.noContent().build();
     }
+
+//    private boolean usuarioEhAdmin (String auth){
+//        String token = auth.substring(7);
+//        Long idUsuario = tokenService.getIdUsuario(token);
+//        Usuario loggedUser = usuarioRepository.findById(idUsuario).orElseThrow(
+//                () -> new IllegalArgumentException("Usuário não encontrado")
+//        );
+//
+//        if (!loggedUser.isAdmin) {
+//            return false;
+//        }
+//        return true;
+//    }
 
 }
