@@ -28,7 +28,6 @@ import static org.mockito.Mockito.when;
 public class VendaServiceTests {
 
     private static final String NOME_CLIENTE = "Ana";
-    private static final String EMAIL_CLIENTE = "comprador@gmail.com";
     private static final String TELEFONE = "+5548912345678";
     private static final BigDecimal TOTAL_VENDA = BigDecimal.valueOf(399.90);
     private static final String ENDERECO = "Rua Comprador, 10";
@@ -113,12 +112,12 @@ public class VendaServiceTests {
         comprador.setEmail(EMAIL_COMPRADOR);
         comprador.setNome(NOME_CLIENTE);
         comprador.setTelefone(TELEFONE);
-        compradorRepository.save(comprador);
+        //compradorRepository.save(comprador);
 
         itemVendaGetLista = new ArrayList<>();
         vendaGet = new VendaGetDto();
         vendaGet.setNomeCliente(NOME_CLIENTE);
-        vendaGet.setEmail(EMAIL_CLIENTE);
+        vendaGet.setEmail(EMAIL_COMPRADOR);
         vendaGet.setTelefone(TELEFONE);
         vendaGet.setTotalVenda(TOTAL_VENDA);
         vendaGet.setEndereco(ENDERECO);
@@ -145,7 +144,7 @@ public class VendaServiceTests {
         novaVenda.setDataEntrega(LocalDate.parse(DATA_ENTREGA,dataFormatada));
         novaVenda.setItens(itemVenda);
         novaVenda.setVendaCancelada(false);
-        vendaRepository.save(novaVenda);
+        //vendaRepository.save(novaVenda);
 
         itemVendaPostLista = new ArrayList<>();
         vendaPost = new VendaPostDto();
@@ -159,32 +158,44 @@ public class VendaServiceTests {
         vendaPost.setComplemento(COMPLEMENTO);
         vendaPost.setDataEntrega(DATA_ENTREGA);
         itemVendaPostDto = new ItemVendaPostDto();
-        itemVendaPostDto.setIdProduto(2l);
-        itemVendaPostDto.setPrecoUnitario(BigDecimal.valueOf(399.90));
+        itemVendaPostDto.setIdProduto(1L);
+        itemVendaPostDto.setPrecoUnitario(BigDecimal.valueOf(33.325));
         itemVendaPostDto.setQuantidade(12);
         itemVendaPostLista.add(itemVendaPostDto);
         vendaPost.setItens(itemVendaPostLista);
-        vendaService.salvarVenda(vendaPost);
+        //vendaService.salvarVenda(vendaPost);
 
     }
 
     @Test
     @DisplayName("Buscar venda pelo Id")
     public void deveRetornarUmaVendaQuandoPassarUmIdValido(){
+
+        when(usuarioRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(usuario));
         when(vendaRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(novaVenda));
+
+        usuarioRepository.save(usuario);
 
         VendaGetDto response = vendaService.listarPorId(novaVenda.getId());
         assertNotNull(response);
         assertEquals(VendaGetDto.class, response.getClass());
-//        assertEquals(ID, response.getId());
-//        Assertions.assertEquals(NOME, response.getNome());
-//        Assertions.assertEquals(DESCRICAO, response.getDescricao());
+        assertEquals(ID_VENDA, response.getId());
+        assertEquals(TOTAL_VENDA, response.getTotalVenda());
+        assertEquals(EMAIL_COMPRADOR, response.getEmail());
+        assertEquals(TELEFONE, response.getTelefone());
+        assertEquals(CPF, response.getCpf());
+        assertEquals(NOME_CLIENTE, response.getNomeCliente());
     }
 
     @Test
     @DisplayName("Salvar nova venda")
     public void deveSalvarUmaVendaQuandoPassarOsDadosDoCompradorEOsItensDaCompra(){
+        when(usuarioRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(usuario));
+        when(compradorRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(comprador));
         when(vendaService.salvarVenda(vendaPost)).thenReturn(novaVenda);
+
+        usuarioRepository.save(usuario);
+        compradorRepository.save(comprador);
 
         Venda response = vendaService.salvarVenda(vendaPost);
 
