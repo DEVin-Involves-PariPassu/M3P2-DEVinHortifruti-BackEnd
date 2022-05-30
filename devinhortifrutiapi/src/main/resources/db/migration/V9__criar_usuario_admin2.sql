@@ -1,0 +1,2 @@
+INSERT INTO usuarios (login, senha, nome, email, dt_nascimento, is_admin) VALUES
+    ('admin2', '$2a$10$EROAHmZVmbSlWFhTvwPPQuik3dmMeZn43cBf/xAI1.IWZw4sySAU2', 'Administrador 2 DEVinHortifruti', 'lucas_cesario@estudante.sesisenai.org.br', '1980-01-01', true)

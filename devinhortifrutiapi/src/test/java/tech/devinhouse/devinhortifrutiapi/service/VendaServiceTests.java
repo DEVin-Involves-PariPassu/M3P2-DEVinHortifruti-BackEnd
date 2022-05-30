@@ -103,7 +103,7 @@ public class VendaServiceTests {
         usuario.setLogin(LOGIN_VENDEDOR);
         usuario.setEmail(EMAIL_VENDEDOR);
         usuario.setDtNascimento(LocalDate.parse(NASCIMENTO, dataFormatada));
-        usuario.setAdmin(true);
+        usuario.setIsAdmin(true);
         usuarioRepository.save(usuario);
 
         comprador = new Comprador();

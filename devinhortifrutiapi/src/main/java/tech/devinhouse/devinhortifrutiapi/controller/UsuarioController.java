@@ -4,8 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.token.TokenService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import tech.devinhouse.devinhortifrutiapi.configuration.TokenService;
 import tech.devinhouse.devinhortifrutiapi.dto.EmailDto;
 import tech.devinhouse.devinhortifrutiapi.dto.UsuarioDTO;
 import tech.devinhouse.devinhortifrutiapi.model.Usuario;
@@ -65,11 +66,13 @@ public class UsuarioController {
     @PostMapping
     public ResponseEntity<Long> post(
             //@RequestHeader("Authorization") String auth,
-            @Valid @RequestBody UsuarioDTO usuarioDTO) {
+            //@Valid
+            @RequestBody UsuarioDTO usuarioDTO) {
         Usuario usuario = service.salvar(usuarioDTO);
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         String senhaTextoPlano = GeradorDeSenha.generatePassayPassword();
         // bcript senha antes de salvar no banco
-        String senha = senhaTextoPlano;
+        String senha = encoder.encode(senhaTextoPlano);
         usuario = service.salvarUsuarioComSenha(usuario, senha);
         EmailDto emailDto = new EmailDto();
 

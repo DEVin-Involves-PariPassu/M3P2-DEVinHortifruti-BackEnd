@@ -53,8 +53,8 @@ public class VendaController {
 
     @GetMapping("/{id_venda}")
     public ResponseEntity<VendaGetDto> getPorId(
-            @PathVariable(name = "id_venda") Long idVenda
-            //@RequestHeader("Authorization") String auth
+            @PathVariable(name = "id_venda") Long idVenda,
+            @RequestHeader("Authorization") String auth
     ){
         VendaGetDto venda = vendaService.listarPorId(idVenda);
         return ResponseEntity.ok(venda);
