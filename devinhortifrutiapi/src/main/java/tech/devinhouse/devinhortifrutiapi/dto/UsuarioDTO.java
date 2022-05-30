@@ -1,26 +1,33 @@
 package tech.devinhouse.devinhortifrutiapi.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 public class UsuarioDTO {
 
-    @NotNull(message = "Informe o ID")
+    @JsonProperty("id")
     private Long id;
 
-    @NotBlank(message = "Informe o nome")
+    @JsonProperty("nome")
+    //@NotBlank(message = "Informe o nome")
     private String nome;
 
-    @NotBlank(message = "O login é obrigatório")
+    @JsonProperty("login")
+    //@NotBlank(message = "O login é obrigatório")
     private String login;
 
-    @NotBlank(message = "Informe o email")
+    @JsonProperty("email")
+    //@NotBlank(message = "Informe o email")
     private String email;
 
-    @NotBlank(message = "Informe a data de nascimento no formato dd/MM/yyyy")
+    @JsonProperty("dtNascimento")
+    //@NotBlank(message = "Informe a data de nascimento no formato dd/MM/yyyy")
     private String dtNascimento;
 
-    @NotNull(message = "Informe se o usuario é Administrador")
+    @JsonProperty("isAdmin")
+    //@NotNull(message = "Informe se o usuario é Administrador")
     private Boolean isAdmin;
 
     public String getNome() {
