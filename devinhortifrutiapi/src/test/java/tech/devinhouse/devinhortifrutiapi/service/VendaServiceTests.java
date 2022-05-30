@@ -1,5 +1,6 @@
 package tech.devinhouse.devinhortifrutiapi.service;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -110,6 +111,8 @@ public class VendaServiceTests {
         vendaGet.setTelefone(TELEFONE);
         vendaGet.setTotalVenda(TOTAL_VENDA);
         vendaGet.setEndereco(ENDERECO);
+        vendaGet.setCpf(CPF);
+        vendaGet.setId(ID_COMPRADOR);
         itemVendaGetDto = new ItemVendaGetDto();
         itemVendaGetDto.setUrlFoto("url");
         itemVendaGetDto.setQuantidade(12);
@@ -182,6 +185,27 @@ public class VendaServiceTests {
         assertEquals(NOME_CLIENTE, response.getNomeCliente());
     }
 
+
+    /*
+ @Test
+    @DisplayName("Produto com preço igual a zero")
+    public void deveLancarUmaExcecaoQuandoTentarAdicionarUmProdutoComPrecoIgualAZero(){
+        when(productRepository.findById(1L)).thenReturn(Optional.of(productEntity));
+        productDTO.setPreco_sugerido(BigDecimal.valueOf(0.00));
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            service.insert(productDTO);
+        });
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            service.updateDoPut(1L,productDTO);
+        });
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            service.updateDoPatch(1L,productDTO);
+        });
+
+    }
+     */
+
     @Test
     @DisplayName("Salvar nova venda")
     public void deveSalvarUmaVendaQuandoPassarOsDadosDoCompradorEOsItensDaCompra(){
@@ -197,6 +221,44 @@ public class VendaServiceTests {
 
         assertNotNull(response);
         assertEquals(Venda.class, response.getClass());
+    }
+
+    @Test
+    @DisplayName("Id vendedor inválido")
+    public void deveLancarExcecaoQuandoPassarIdDoVendedorInvalido(){
+        when(usuarioRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(usuario));
+        when(compradorRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(comprador));
+        when(vendaService.salvarVenda(vendaPost)).thenReturn(novaVenda);
+        when(vendaRepository.save(any())).thenReturn(novaVenda);
+
+        usuarioRepository.save(usuario);
+        compradorRepository.save(comprador);
+
+        vendaPost.setIdVendedor(null);
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            vendaService.salvarVenda(vendaPost);
+        });
+
+    }
+
+    @Test
+    @DisplayName("Id comprador inválido")
+    public void deveLancarExcecaoQuandoPassarIdDoCompradorInvalido(){
+        when(usuarioRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(usuario));
+        when(compradorRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(comprador));
+        when(vendaService.salvarVenda(vendaPost)).thenReturn(novaVenda);
+        when(vendaRepository.save(any())).thenReturn(novaVenda);
+
+        usuarioRepository.save(usuario);
+        compradorRepository.save(comprador);
+
+        vendaPost.setIdComprador(null);
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            vendaService.salvarVenda(vendaPost);
+        });
+
     }
 }
 
