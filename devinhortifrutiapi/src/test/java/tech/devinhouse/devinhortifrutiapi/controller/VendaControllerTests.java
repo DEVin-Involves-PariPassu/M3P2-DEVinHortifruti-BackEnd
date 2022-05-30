@@ -1,39 +1,34 @@
 package tech.devinhouse.devinhortifrutiapi.controller;
 
-import org.json.JSONObject;
+
 import org.junit.jupiter.api.*;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import tech.devinhouse.devinhortifrutiapi.dto.ItemVendaGetDto;
 import tech.devinhouse.devinhortifrutiapi.dto.ItemVendaPostDto;
 import tech.devinhouse.devinhortifrutiapi.dto.VendaGetDto;
 import tech.devinhouse.devinhortifrutiapi.dto.VendaPostDto;
 import tech.devinhouse.devinhortifrutiapi.model.*;
+import tech.devinhouse.devinhortifrutiapi.repository.CompradorRepository;
+import tech.devinhouse.devinhortifrutiapi.repository.UsuarioRepository;
 import tech.devinhouse.devinhortifrutiapi.repository.VendaRepository;
-import tech.devinhouse.devinhortifrutiapi.service.RabbitMQService;
 import tech.devinhouse.devinhortifrutiapi.service.VendaService;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import static org.assertj.core.internal.bytebuddy.matcher.ElementMatchers.is;
-import static org.mockito.Mockito.doReturn;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 
 @Disabled
 @SpringBootTest
@@ -47,18 +42,21 @@ public class VendaControllerTests {
     private VendaService vendaService;
 
     @MockBean
-    private VendaRepository vendaRepository;
+    VendaRepository vendaRepository;
 
     @MockBean
-    RabbitMQService rabbitMQService;
+    CompradorRepository compradorRepository;
+
+    @MockBean
+    UsuarioRepository usuarioRepository;
 
     private static final String NOME_CLIENTE = "Ana";
     private static final String TELEFONE = "+5548912345678";
     private static final BigDecimal TOTAL_VENDA = BigDecimal.valueOf(399.90);
     private static final String ENDERECO = "Rua Comprador, 10";
 
-    private static final Long ID_COMPRADOR = 1l;
-    private static final Long ID_VENDEDOR = 1l;
+    private static final Long ID_COMPRADOR = 1L;
+    private static final Long ID_VENDEDOR = 1L;
     private static final String EMAIL_COMPRADOR = "comprador@gmail.com";
     private static final String SIGLA_ESTADO = "PR";
     private static final String CEP = "83607056";
@@ -74,7 +72,7 @@ public class VendaControllerTests {
     private static final String NASCIMENTO = "11/10/1996";
     private static final String CPF = "12345678910";
 
-    private static final Long ID_VENDA = 1l;
+    private static final Long ID_VENDA = 1L;
 
     private Usuario usuario;
     private Comprador comprador;
@@ -92,10 +90,10 @@ public class VendaControllerTests {
     @BeforeEach
     public void setup(){
         MockitoAnnotations.openMocks(this);
-        iniciaDB();
+        startVenda();
     }
 
-    public void iniciaDB(){
+    private void startVenda() {
         DateTimeFormatter dataFormatada = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         usuario = new Usuario();
@@ -120,6 +118,8 @@ public class VendaControllerTests {
         vendaGet.setTelefone(TELEFONE);
         vendaGet.setTotalVenda(TOTAL_VENDA);
         vendaGet.setEndereco(ENDERECO);
+        vendaGet.setCpf(CPF);
+        vendaGet.setId(ID_COMPRADOR);
         itemVendaGetDto = new ItemVendaGetDto();
         itemVendaGetDto.setUrlFoto("url");
         itemVendaGetDto.setQuantidade(12);
@@ -151,6 +151,7 @@ public class VendaControllerTests {
         itemVenda.add(novoItemVenda);
         novaVenda.setItens(itemVenda);
         novaVenda.setVendaCancelada(false);
+
         itemVendaPostLista = new ArrayList<>();
         vendaPost = new VendaPostDto();
         vendaPost.setIdComprador(ID_COMPRADOR);
@@ -168,6 +169,26 @@ public class VendaControllerTests {
         itemVendaPostDto.setQuantidade(12);
         itemVendaPostLista.add(itemVendaPostDto);
         vendaPost.setItens(itemVendaPostLista);
+
     }
+
+    @Test
+    @DisplayName("GET/vendas/{id_venda}")
+    public void deveRetornarUmaVendaQuandoPassarUmIdValido() throws Exception {
+
+        when(vendaService.salvarVenda(vendaPost)).thenReturn(novaVenda);
+        when(vendaService.listarPorId(novaVenda.getId())).thenReturn(vendaGet);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/vendas/1")
+                        .header("Content-Type", "application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.cpf").value("12345678910"))
+                .andExpect(jsonPath("$.nomeCliente").value("Ana"))
+                .andExpect(jsonPath("$.telefone").value("+5548912345678"))
+                .andExpect(jsonPath("$.email").value("comprador@gmail.com"));
+
+    }
+
 
 }
