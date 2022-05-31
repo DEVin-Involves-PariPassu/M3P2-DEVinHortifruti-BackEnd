@@ -1,5 +1,6 @@
 package tech.devinhouse.devinhortifrutiapi.dto;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
@@ -7,7 +8,7 @@ public class ProdutoDTO {
 
     private Long id;
 
-     @NotNull (message = "Nome do produto é requerido")
+     @NotNull @NotBlank (message = "Nome do produto é requerido")
     private String nome;
 
      @NotNull(message = "Descrição do produto é requerida")
@@ -17,10 +18,10 @@ public class ProdutoDTO {
     private String urlFoto;
 
      @NotNull(message = "Preço do produto é requerido")
-    private BigDecimal precoAtual;
+    private BigDecimal precoSugerido;
 
      @NotNull(message = "Status do produto é requerido")
-    private Boolean isActive;
+    private Boolean isAtivo;
 
     public Long getId() {
         return id;
@@ -54,21 +55,16 @@ public class ProdutoDTO {
         this.urlFoto = urlFoto;
     }
 
-    public BigDecimal getPrecoAtual() {
-        return precoAtual;
+    public BigDecimal getPrecoSugerido() {
+        return precoSugerido;
     }
 
-    public void setPrecoAtual(BigDecimal precoAtual) {
-        this.precoAtual = precoAtual;
-    }
+    public void setPrecoSugerido(BigDecimal precoSugerido) {
+        this.precoSugerido = precoSugerido;}
 
-    public Boolean getActive() {
-        return isActive;
-    }
+    public Boolean getAtivo() {return isAtivo = true;}
 
-    public void setActive(Boolean active) {
-        isActive = active;
-    }
+    public void setAtivo(Boolean ativo) {isAtivo = ativo;}
 
     @Override
     public String toString() {
@@ -77,8 +73,8 @@ public class ProdutoDTO {
                 ", nome='" + nome + '\'' +
                 ", descricao='" + descricao + '\'' +
                 ", urlFoto='" + urlFoto + '\'' +
-                ", precoAtual=" + precoAtual +
-                ", isActive=" + isActive +
+                ", precoSugerido=" + precoSugerido +
+                ", isAtivo=" + isAtivo +
                 '}';
     }
 }
