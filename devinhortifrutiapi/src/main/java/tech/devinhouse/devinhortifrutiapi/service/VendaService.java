@@ -21,7 +21,10 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class VendaService {
@@ -118,5 +121,64 @@ public class VendaService {
         List<ItemVendaGetDto> itens = this.itemVendaService.listarItens(venda);
         vendaDto.setItens(itens);
         return vendaDto;
+    }
+
+    @Transactional
+    List<VendaGetDto> listarVendas(Long idUsuario, String cpf, String nome, BigDecimal valorTotal) {
+
+        if (idUsuario != null && cpf == null && nome == null && valorTotal == null) {
+            Optional<Venda> listaUsuario = Optional.ofNullable(vendaRepository.findById(idUsuario).orElseThrow(
+                    () -> new EntityNotFoundException("Id não localizado")
+            ));
+            Venda vendaEntity = listaUsuario.get();
+            List<VendaGetDto> vendaGetDto  = converteVendaDTO(vendaRepository.findUsuarioByIdUsuario(vendaEntity));
+            return vendaGetDto;
+
+        } else if (idUsuario == null && cpf != null && nome == null && valorTotal == null) {
+            Optional<Venda> listaCpf = Optional.ofNullable(vendaRepository.findById(Long.valueOf(cpf)).orElseThrow(
+                    () -> new EntityNotFoundException("Cpf não localizado")));
+            Venda vendaEntity = listaCpf.get();
+            List<VendaGetDto> vendaDTO = converteVendaDTO(vendaRepository.findVendaByCpf(vendaEntity));
+            return vendaDTO;
+
+        }
+        Optional<Venda> listaUsuario = Optional.ofNullable(vendaRepository.findById(idUsuario).orElseThrow(
+                () -> new EntityNotFoundException("Id não encontrada")));
+        Venda vendaEntity = listaUsuario.get();
+
+        Optional<Venda> listaVenda = Optional.ofNullable(vendaRepository.findById(Long.valueOf(cpf)).orElseThrow(
+                () -> new EntityNotFoundException("CPF não encontrado")));
+        Venda usuarioEntity = listaVenda.get();
+        List<VendaGetDto> vendaDTO = converteVendaDTO(vendaRepository.findVendaByIdAndCpf(usuarioEntity,vendaEntity));
+
+        return vendaDTO;
+    }
+
+    @Transactional
+    public List<VendaGetDto> listar(Long idUsuario, String cpf, String nome, BigDecimal valorTotal ) {
+        if (idUsuario == null && cpf == null && nome == null && valorTotal == null) {
+            List<Venda> lista = vendaRepository.findAll();
+            List<VendaGetDto> listaDTO = converteVendaDTO(lista);
+            if (lista.isEmpty()) {
+                throw new NoSuchElementException("Não existem vendas");
+            }
+            return listaDTO;
+        }
+        List<VendaGetDto> listaDTO = listarVendas(idUsuario, cpf, nome, valorTotal);
+        return listaDTO;
+    }
+
+    private List<VendaGetDto> converteVendaDTO(List<Venda> list){
+        List<VendaGetDto> listaDTO = new ArrayList<>();
+        for (Venda venda : list
+        ) {
+            VendaGetDto vendaDTO = new VendaGetDto();
+            vendaDTO.setId(venda.getId());
+            vendaDTO.setCpf(venda.getCpf());
+            vendaDTO.setNomeCliente(venda.getNome());
+            vendaDTO.setTotalVenda(venda.getTotalVenda());
+            listaDTO.add(vendaDTO);
+        }
+        return listaDTO;
     }
 }
