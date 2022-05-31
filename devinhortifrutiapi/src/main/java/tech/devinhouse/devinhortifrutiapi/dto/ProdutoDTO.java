@@ -62,9 +62,9 @@ public class ProdutoDTO {
     public void setPrecoSugerido(BigDecimal precoSugerido) {
         this.precoSugerido = precoSugerido;}
 
-    public Boolean getAtivo() {return isAtivo = true;}
+    public Boolean getIsAtivo() {return isAtivo;}
 
-    public void setAtivo(Boolean ativo) {isAtivo = ativo;}
+    public void setIsAtivo(Boolean ativo) {isAtivo = ativo;}
 
     @Override
     public String toString() {

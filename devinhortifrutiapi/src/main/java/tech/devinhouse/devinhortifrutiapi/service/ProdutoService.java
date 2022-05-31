@@ -31,7 +31,7 @@ public class ProdutoService {
         produto.setDescricao(produtoDTO.getDescricao());
         produto.setUrlFoto(produtoDTO.getUrlFoto());
         produto.setPrecoSugerido(produtoDTO.getPrecoSugerido());
-        produto.setAtivo(produtoDTO.getAtivo());
+        produto.setIsAtivo(produtoDTO.getIsAtivo());
 
         produtoRepository.save(produto);
         return produto.getId();
@@ -70,7 +70,7 @@ public class ProdutoService {
     }
 
     private void validaProdutoAtivo(ProdutoDTO produtoDTO){
-        if (!produtoDTO.getAtivo()){
+        if (!produtoDTO.getIsAtivo()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Produto está inativo.");
         }
     }
@@ -97,7 +97,7 @@ public class ProdutoService {
         produto.setDescricao(produtoDTO.getDescricao());
         produto.setUrlFoto(produtoDTO.getUrlFoto());
         produto.setPrecoSugerido(produtoDTO.getPrecoSugerido());
-        produto.setAtivo(produtoDTO.getAtivo());
+        produto.setIsAtivo(produtoDTO.getIsAtivo());
 
         return produto;
     }

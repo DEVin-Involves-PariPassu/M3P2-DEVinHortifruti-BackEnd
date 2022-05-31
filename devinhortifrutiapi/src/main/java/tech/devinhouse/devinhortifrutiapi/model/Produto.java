@@ -64,13 +64,9 @@ public class Produto {
     this.precoSugerido = precoSugerido;
   }
 
-  public boolean isAtivo() {
-    return isAtivo;
-  }
+  public boolean isAtivo() {return isAtivo;}
 
-  public void setAtivo(boolean ativo) {
-    isAtivo = ativo;
-  }
+  public void setIsAtivo(boolean ativo) {isAtivo = ativo;}
 
   public Produto() {
 
