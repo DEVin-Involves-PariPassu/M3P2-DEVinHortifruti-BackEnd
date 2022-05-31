@@ -30,8 +30,8 @@ public class ProdutoService {
         produto.setName(produtoDTO.getNome());
         produto.setDescricao(produtoDTO.getDescricao());
         produto.setUrlFoto(produtoDTO.getUrlFoto());
-        produto.setPrecoSugerido(produtoDTO.getPrecoAtual());
-        produto.setAtivo(produtoDTO.getActive());
+        produto.setPrecoSugerido(produtoDTO.getPrecoSugerido());
+        produto.setIsAtivo(produtoDTO.getIsAtivo());
 
         produtoRepository.save(produto);
         return produto.getId();
@@ -61,16 +61,16 @@ public class ProdutoService {
     }
 
     private void validaPrecoProduto(ProdutoDTO produtoDTO){
-        if (produtoDTO.getPrecoAtual() == null){
+        if (produtoDTO.getPrecoSugerido() == null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O preço é requerido.");
         }
-        if (produtoDTO.getPrecoAtual().compareTo(BigDecimal.ZERO) < 0){
+        if (produtoDTO.getPrecoSugerido().compareTo(BigDecimal.ZERO) < 0){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O valor não pode ser negativo.");
         }
     }
 
     private void validaProdutoAtivo(ProdutoDTO produtoDTO){
-        if (!produtoDTO.getActive()){
+        if (!produtoDTO.getIsAtivo()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Produto está inativo.");
         }
     }
@@ -96,8 +96,8 @@ public class ProdutoService {
         produto.setName(produtoDTO.getNome());
         produto.setDescricao(produtoDTO.getDescricao());
         produto.setUrlFoto(produtoDTO.getUrlFoto());
-        produto.setPrecoSugerido(produtoDTO.getPrecoAtual());
-        produto.setAtivo(produtoDTO.getActive());
+        produto.setPrecoSugerido(produtoDTO.getPrecoSugerido());
+        produto.setIsAtivo(produtoDTO.getIsAtivo());
 
         return produto;
     }

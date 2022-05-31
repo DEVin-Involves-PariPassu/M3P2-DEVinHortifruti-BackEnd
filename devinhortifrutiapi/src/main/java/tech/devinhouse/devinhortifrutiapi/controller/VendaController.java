@@ -45,7 +45,7 @@ public class VendaController {
 
         String valorTotalDaCompra = NumberFormat.getCurrencyInstance().format(novaVenda.getTotalVenda());
 
-        String mensagem = String.format("Prezado %s, sua compra foi realizada com sucesso! %n" +
+        String mensagem = String.format("Prezado(a) %s, sua compra foi realizada com sucesso! %n" +
                         "Valor total da compra: %s %n" +
                         "O vendedor está preparando seu pedido e em breve estará a caminho!",
                 novaVenda.getComprador().getNome(), valorTotalDaCompra
@@ -63,8 +63,8 @@ public class VendaController {
 
     @GetMapping("/{id_venda}")
     public ResponseEntity<VendaGetDto> getPorId(
-            @PathVariable(name = "id_venda") Long idVenda
-            //@RequestHeader("Authorization") String auth
+            @PathVariable(name = "id_venda") Long idVenda,
+            @RequestHeader("Authorization") String auth
     ){
         VendaGetDto venda = vendaService.listarPorId(idVenda);
         return ResponseEntity.ok(venda);
