@@ -1,18 +1,20 @@
 package tech.devinhouse.devinhortifrutiapi.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import tech.devinhouse.devinhortifrutiapi.dto.EmailDto;
-import tech.devinhouse.devinhortifrutiapi.dto.SmsDto;
-import tech.devinhouse.devinhortifrutiapi.dto.VendaPostDto;
-import tech.devinhouse.devinhortifrutiapi.dto.VendaGetDto;
+import tech.devinhouse.devinhortifrutiapi.configuration.TokenService;
+import tech.devinhouse.devinhortifrutiapi.dto.*;
+import tech.devinhouse.devinhortifrutiapi.model.Venda;
+import tech.devinhouse.devinhortifrutiapi.repository.VendaRepository;
 import tech.devinhouse.devinhortifrutiapi.service.RabbitMQService;
 import tech.devinhouse.devinhortifrutiapi.service.VendaService;
 
 import javax.validation.Valid;
 import java.text.NumberFormat;
+import java.util.List;
 
 @RestController
 @RequestMapping("/vendas")
@@ -23,6 +25,12 @@ public class VendaController {
 
     @Autowired
     RabbitMQService rabbitMQService;
+
+    @Autowired
+    private VendaRepository vendaRepository;
+
+    @Autowired
+    private TokenService tokenService;
 
     @PostMapping
     public ResponseEntity<Long> post(
@@ -37,7 +45,7 @@ public class VendaController {
 
         String mensagem = String.format("Prezado(a) %s, sua compra foi realizada com sucesso! %n" +
                         "Valor total da compra: %s %n" +
-                        "O vendador está preparando seu pedido e em breve estará a caminho!",
+                        "O vendedor está preparando seu pedido e em breve estará a caminho!",
                 novaVenda.getComprador().getNome(), valorTotalDaCompra
         );
 
@@ -58,6 +66,24 @@ public class VendaController {
     ){
         VendaGetDto venda = vendaService.listarPorId(idVenda);
         return ResponseEntity.ok(venda);
+    }
+
+    @GetMapping
+    public ResponseEntity<VendaListaGetDto> get(
+            @RequestParam(required = false) String nome,
+            @RequestParam(required = false) String cpf,
+            @RequestParam(required = false, defaultValue = "1") Integer numeroPagina,
+            @RequestParam(required = false, defaultValue = "5") Integer tamanho,
+            @RequestHeader("Authorization") String auth
+    ) throws JsonProcessingException {
+        String token = auth.substring(7);
+        UsuarioDTO usuario = tokenService.getUsuario(token);
+
+        VendaListaGetDto vendaListaGetDto = vendaService.listarVendas(nome, cpf, numeroPagina, tamanho, usuario);
+        if (vendaListaGetDto.getVendas().isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(vendaListaGetDto);
     }
 
 }

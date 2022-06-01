@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public class VendaGetDto {
+
     private Long id;
 
     private String nomeCliente;

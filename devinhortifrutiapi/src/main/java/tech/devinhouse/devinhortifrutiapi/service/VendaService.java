@@ -1,30 +1,33 @@
 package tech.devinhouse.devinhortifrutiapi.service;
 
 
-import tech.devinhouse.devinhortifrutiapi.dto.VendaPostDto;
-
-import tech.devinhouse.devinhortifrutiapi.dto.ItemVendaGetDto;
-import tech.devinhouse.devinhortifrutiapi.dto.VendaGetDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+import tech.devinhouse.devinhortifrutiapi.dto.*;
 import tech.devinhouse.devinhortifrutiapi.model.ItemVenda;
 import tech.devinhouse.devinhortifrutiapi.model.Venda;
 import tech.devinhouse.devinhortifrutiapi.repository.CompradorRepository;
-import tech.devinhouse.devinhortifrutiapi.repository.VendaRepository;
+import tech.devinhouse.devinhortifrutiapi.repository.SpecificationsVenda;
 import tech.devinhouse.devinhortifrutiapi.repository.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import tech.devinhouse.devinhortifrutiapi.repository.VendaRepository;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class VendaService {
+
     @Autowired
     VendaRepository vendaRepository;
 
@@ -38,7 +41,7 @@ public class VendaService {
     CompradorRepository compradorRepository;
 
 
-    public Venda salvarVenda(VendaPostDto vendaPostDto){
+    public Venda salvarVenda(VendaPostDto vendaPostDto) {
         validarSeVendedorExiste(vendaPostDto.getIdVendedor());
         validarSeCompradorExiste(vendaPostDto.getIdComprador());
         validarSeProdutoExiste(vendaPostDto);
@@ -46,15 +49,15 @@ public class VendaService {
         return vendaRepository.save(novaVenda);
     }
 
-    public void validarSeVendedorExiste(Long idVendedor){
+    public void validarSeVendedorExiste(Long idVendedor) {
         usuarioRepository.findById(idVendedor).orElseThrow(() -> new IllegalArgumentException("Id do vendedor é inválido "));
     }
 
-    public void validarSeCompradorExiste(Long idComprador){
+    public void validarSeCompradorExiste(Long idComprador) {
         compradorRepository.findById(idComprador).orElseThrow(() -> new IllegalArgumentException("Id do comprador é inválido "));
     }
 
-    public void validarSeProdutoExiste(VendaPostDto vendaPostDto){
+    public void validarSeProdutoExiste(VendaPostDto vendaPostDto) {
         itemVendaService.verificarSeOProdutoExiste(vendaPostDto.getItens());
     }
 
@@ -91,13 +94,13 @@ public class VendaService {
     }
 
     @Transactional
-    public VendaGetDto listarPorId (Long id){
+    public VendaGetDto listarPorId(Long id) {
         Venda venda = vendaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Venda não encontrada"));
         VendaGetDto vendaDto = converterVendaParaVendaDto(venda);
         return vendaDto;
     }
 
-    public VendaGetDto converterVendaParaVendaDto(Venda venda){
+    public VendaGetDto converterVendaParaVendaDto(Venda venda) {
         VendaGetDto vendaDto = new VendaGetDto();
         vendaDto.setId(venda.getId());
         vendaDto.setNomeCliente(venda.getComprador().getNome());
@@ -117,6 +120,52 @@ public class VendaService {
         vendaDto.setEndereco(endereco);
         List<ItemVendaGetDto> itens = this.itemVendaService.listarItens(venda);
         vendaDto.setItens(itens);
+        return vendaDto;
+    }
+
+    @Transactional
+    public VendaListaGetDto listarVendas(String nome, String cpf, Integer numeroPagina, Integer tamanho, UsuarioDTO usuario) {
+
+        Pageable pageable = PageRequest.of(numeroPagina - 1, tamanho);
+
+        Page<Venda> pagina = null;
+        if (usuario.getIsAdmin() == true) {
+            pagina = vendaRepository.findAll(Specification.where(
+                    SpecificationsVenda.cpf(cpf).and(
+                            SpecificationsVenda.nome(nome)
+                    )
+            ), pageable);
+        } else {
+            pagina = vendaRepository.findByVendedor(usuario.getId(),
+                    Specification.where(
+                            SpecificationsVenda.cpf(cpf).and(
+                                    SpecificationsVenda.nome(nome)
+                            )
+                    ), pageable);
+        }
+
+        VendaListaGetDto vendas = new VendaListaGetDto();
+        vendas.setTotalElementos(pagina.getTotalElements());
+        vendas.setTotalPaginas(pagina.getTotalPages());
+        List<Venda> vendaList = pagina.getContent();
+        List<VendaElementoGetDto> vendaElementoGetDtos = new ArrayList<>();
+
+        for (Venda venda : vendaList) {
+            VendaElementoGetDto vendaElementoGetDto = converterVendaParaVendaElementoDto(venda);
+            vendaElementoGetDtos.add(vendaElementoGetDto);
+        }
+
+        vendas.setVendas(vendaElementoGetDtos);
+        return vendas;
+    }
+
+    public VendaElementoGetDto converterVendaParaVendaElementoDto(Venda venda) {
+        VendaElementoGetDto vendaDto = new VendaElementoGetDto();
+        vendaDto.setId(venda.getId());
+        vendaDto.setNomeCliente(venda.getComprador().getNome());
+        vendaDto.setCpf(venda.getComprador().getCpf());
+        vendaDto.setTotalVenda(venda.getTotalVenda());
+
         return vendaDto;
     }
 }
