@@ -87,10 +87,11 @@ public class CompradorService {
     public Long updateDoPut(Long id_comprador,
                             CompradorDTO compradorDTO) {
         Comprador comprador = validationsPut(id_comprador, compradorDTO);
-        comprador.setNome(compradorDTO.getNome());
-        comprador.setEmail(compradorDTO.getCpf());
-        comprador.setTelefone(compradorDTO.getTelefone());
-        comprador.setCpf(compradorDTO.getCpf());
+
+        if(compradorDTO.getNome() != null)
+            comprador.setNome(compradorDTO.getNome());
+        if(compradorDTO.getTelefone() !=null)
+            comprador.setTelefone(compradorDTO.getTelefone());
 
         return id_comprador;
     }
@@ -99,14 +100,13 @@ public class CompradorService {
                                     CompradorDTO compradorDTO) {
         Comprador comprador = findById(id_comprador);
 
-        existsCpf(compradorDTO);
-        existsEmail(compradorDTO);
-        existsTelefone(compradorDTO);
-        existsNome(compradorDTO);
-        isUniqueCpf(compradorDTO);
-        isUniqueEmail(compradorDTO);
+        if(compradorDTO.getCpf() != null && compradorDTO.getEmail() != null) {
+            if (!compradorDTO.getCpf().isBlank() && !compradorDTO.getEmail().isBlank()) {
+                isUniqueOrTheSame(compradorDTO, id_comprador, comprador);
+            }
+        }
 
-        return  comprador;
+        return comprador;
     }
 
     public Comprador getComprador(String cpf) {
@@ -116,5 +116,22 @@ public class CompradorService {
         }
         return compradorOpt.get();
     }
-  
+
+    public void isUniqueOrTheSame(CompradorDTO compradorDTO, Long id_comprador, Comprador comprador) {
+        Optional<Comprador> optionalCpf = this.compradorRepository.findByCpf(compradorDTO.getCpf());
+        Optional<Comprador> optionalEmail = this.compradorRepository.findByEmail(compradorDTO.getEmail());
+
+        if(optionalCpf.isPresent() && id_comprador != this.compradorRepository.findByCpf(compradorDTO.getCpf()).get().getId()) {
+            throw new EntityExistsException("Já existe Comprador com o CPF " + compradorDTO.getCpf());
+        }
+        if(optionalCpf.isEmpty()) {
+            comprador.setCpf(compradorDTO.getCpf());
+        }
+        if(!optionalEmail.isEmpty() && optionalEmail.isPresent() && id_comprador != this.compradorRepository.findByEmail(compradorDTO.getEmail()).get().getId()) {
+            throw new EntityExistsException("Já existe Comprador com o E-mail " + compradorDTO.getEmail());
+        }
+        if(optionalEmail.isEmpty()) {
+            comprador.setEmail(compradorDTO.getEmail());
+        }
+    }
 }
