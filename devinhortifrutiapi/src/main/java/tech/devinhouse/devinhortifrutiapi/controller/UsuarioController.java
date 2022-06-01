@@ -1,5 +1,6 @@
 package tech.devinhouse.devinhortifrutiapi.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
@@ -109,17 +110,17 @@ public class UsuarioController {
         return ResponseEntity.noContent().build();
     }
 
-//    private boolean usuarioEhAdmin (String auth){
-//        String token = auth.substring(7);
-//        Long idUsuario = tokenService.getIdUsuario(token);
-//        Usuario loggedUser = usuarioRepository.findById(idUsuario).orElseThrow(
-//                () -> new IllegalArgumentException("Usuário não encontrado")
-//        );
-//
-//        if (!loggedUser.isAdmin) {
-//            return false;
-//        }
-//        return true;
-//    }
+    private boolean usuarioEhAdmin (String auth) throws JsonProcessingException {
+        String token = auth.substring(7);
+        Long idUsuario = tokenService.getUsuarioPorId(token);
+        Usuario loggedUser = usuarioRepository.findById(idUsuario).orElseThrow(
+                () -> new IllegalArgumentException("Usuário não encontrado")
+        );
+
+        if (!loggedUser.getIsAdmin()) {
+            return false;
+        }
+        return true;
+    }
 
 }
