@@ -68,12 +68,12 @@ public class VendaController {
         return ResponseEntity.ok(venda);
     }
 
-    @GetMapping("/vendas")
+    @GetMapping
     public ResponseEntity<VendaListaGetDto> get(
             @RequestParam(required = false) String nome,
             @RequestParam(required = false) String cpf,
-            @RequestParam(required = false) Integer numeroPagina,
-            @RequestParam(required = false) Integer tamanho,
+            @RequestParam(required = false, defaultValue = "1") Integer numeroPagina,
+            @RequestParam(required = false, defaultValue = "5") Integer tamanho,
             @RequestHeader("Authorization") String auth
     ) throws JsonProcessingException {
         String token = auth.substring(7);

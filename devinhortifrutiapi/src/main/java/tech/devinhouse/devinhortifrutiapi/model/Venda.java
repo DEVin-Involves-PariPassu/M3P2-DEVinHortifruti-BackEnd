@@ -16,14 +16,6 @@ public class Venda {
 
     private Long id;
 
-    private String nome;
-
-    private String cpf;
-
-    private Integer page;
-
-    private Integer size;
-
     @ManyToOne
     @JoinColumn(name = "id_comprador", referencedColumnName = "id")
     private Comprador comprador;
@@ -59,38 +51,6 @@ public class Venda {
 
     @Column(name = "venda_cancelada")
     private Boolean vendaCancelada;
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nomeCliente) {
-        this.nome = nomeCliente;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-
-    public Integer getPage() {
-        return page;
-    }
-
-    public void setPage(Integer page) {
-        this.page = page;
-    }
-
-    public Integer getSize() {
-        return size;
-    }
-
-    public void setSize(Integer size) {
-        this.size = size;
-    }
 
     public Long getId() {
         return id;
@@ -203,6 +163,4 @@ public class Venda {
     public void setVendaCancelada(Boolean vendaCancelada) {
         this.vendaCancelada = vendaCancelada;
     }
-
-    public boolean canRead(String vendas) { }
 }

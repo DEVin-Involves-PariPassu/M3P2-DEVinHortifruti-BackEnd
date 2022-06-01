@@ -124,22 +124,22 @@ public class VendaService {
     }
 
     @Transactional
-    public VendaListaGetDto listarVendas(String cpf, String nome, Integer numeroPagina, Integer tamanho, UsuarioDTO usuario) {
+    public VendaListaGetDto listarVendas(String nome, String cpf, Integer numeroPagina, Integer tamanho, UsuarioDTO usuario) {
 
         Pageable pageable = PageRequest.of(numeroPagina - 1, tamanho);
 
         Page<Venda> pagina = null;
         if (usuario.getIsAdmin() == true) {
             pagina = vendaRepository.findAll(Specification.where(
-                    SpecificationsVenda.nome(nome).and(
-                            SpecificationsVenda.cpf(cpf)
+                    SpecificationsVenda.cpf(cpf).and(
+                            SpecificationsVenda.nome(nome)
                     )
             ), pageable);
         } else {
             pagina = vendaRepository.findByVendedor(usuario.getId(),
                     Specification.where(
-                            SpecificationsVenda.nome(nome).and(
-                                    SpecificationsVenda.cpf(cpf)
+                            SpecificationsVenda.cpf(cpf).and(
+                                    SpecificationsVenda.nome(nome)
                             )
                     ), pageable);
         }
