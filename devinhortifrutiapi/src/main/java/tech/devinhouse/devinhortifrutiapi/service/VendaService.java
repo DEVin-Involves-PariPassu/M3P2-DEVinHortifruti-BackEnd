@@ -1,33 +1,33 @@
 package tech.devinhouse.devinhortifrutiapi.service;
 
 
-import tech.devinhouse.devinhortifrutiapi.dto.VendaPostDto;
-
-import tech.devinhouse.devinhortifrutiapi.dto.ItemVendaGetDto;
-import tech.devinhouse.devinhortifrutiapi.dto.VendaGetDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+import tech.devinhouse.devinhortifrutiapi.dto.*;
 import tech.devinhouse.devinhortifrutiapi.model.ItemVenda;
 import tech.devinhouse.devinhortifrutiapi.model.Venda;
 import tech.devinhouse.devinhortifrutiapi.repository.CompradorRepository;
-import tech.devinhouse.devinhortifrutiapi.repository.VendaRepository;
+import tech.devinhouse.devinhortifrutiapi.repository.SpecificationsVenda;
 import tech.devinhouse.devinhortifrutiapi.repository.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import tech.devinhouse.devinhortifrutiapi.repository.VendaRepository;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class VendaService {
+
     @Autowired
     VendaRepository vendaRepository;
 
@@ -41,7 +41,7 @@ public class VendaService {
     CompradorRepository compradorRepository;
 
 
-    public Venda salvarVenda(VendaPostDto vendaPostDto){
+    public Venda salvarVenda(VendaPostDto vendaPostDto) {
         validarSeVendedorExiste(vendaPostDto.getIdVendedor());
         validarSeCompradorExiste(vendaPostDto.getIdComprador());
         validarSeProdutoExiste(vendaPostDto);
@@ -49,15 +49,15 @@ public class VendaService {
         return vendaRepository.save(novaVenda);
     }
 
-    public void validarSeVendedorExiste(Long idVendedor){
+    public void validarSeVendedorExiste(Long idVendedor) {
         usuarioRepository.findById(idVendedor).orElseThrow(() -> new IllegalArgumentException("Id do vendedor é inválido "));
     }
 
-    public void validarSeCompradorExiste(Long idComprador){
+    public void validarSeCompradorExiste(Long idComprador) {
         compradorRepository.findById(idComprador).orElseThrow(() -> new IllegalArgumentException("Id do comprador é inválido "));
     }
 
-    public void validarSeProdutoExiste(VendaPostDto vendaPostDto){
+    public void validarSeProdutoExiste(VendaPostDto vendaPostDto) {
         itemVendaService.verificarSeOProdutoExiste(vendaPostDto.getItens());
     }
 
@@ -94,13 +94,13 @@ public class VendaService {
     }
 
     @Transactional
-    public VendaGetDto listarPorId (Long id){
+    public VendaGetDto listarPorId(Long id) {
         Venda venda = vendaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Venda não encontrada"));
         VendaGetDto vendaDto = converterVendaParaVendaDto(venda);
         return vendaDto;
     }
 
-    public VendaGetDto converterVendaParaVendaDto(Venda venda){
+    public VendaGetDto converterVendaParaVendaDto(Venda venda) {
         VendaGetDto vendaDto = new VendaGetDto();
         vendaDto.setId(venda.getId());
         vendaDto.setNomeCliente(venda.getComprador().getNome());
@@ -124,61 +124,48 @@ public class VendaService {
     }
 
     @Transactional
-    List<VendaGetDto> listarVendas(Long idUsuario, String cpf, String nome, BigDecimal valorTotal) {
+    public VendaListaGetDto listarVendas(String cpf, String nome, Integer numeroPagina, Integer tamanho, UsuarioDTO usuario) {
 
-        if (idUsuario != null && cpf == null && nome == null && valorTotal == null) {
-            Optional<Venda> listaUsuario = Optional.ofNullable(vendaRepository.findById(idUsuario).orElseThrow(
-                    () -> new EntityNotFoundException("Id não localizado")
-            ));
-            Venda vendaEntity = listaUsuario.get();
-            List<VendaGetDto> vendaGetDto  = converteVendaDTO(vendaRepository.findUsuarioByIdUsuario(vendaEntity));
-            return vendaGetDto;
+        Pageable pageable = PageRequest.of(numeroPagina - 1, tamanho);
 
-        } else if (idUsuario == null && cpf != null && nome == null && valorTotal == null) {
-            Optional<Venda> listaCpf = Optional.ofNullable(vendaRepository.findById(Long.valueOf(cpf)).orElseThrow(
-                    () -> new EntityNotFoundException("Cpf não localizado")));
-            Venda vendaEntity = listaCpf.get();
-            List<VendaGetDto> vendaDTO = converteVendaDTO(vendaRepository.findVendaByCpf(vendaEntity));
-            return vendaDTO;
-
+        Page<Venda> pagina = null;
+        if (usuario.getIsAdmin() == true) {
+            pagina = vendaRepository.findAll(Specification.where(
+                    SpecificationsVenda.nome(nome).and(
+                            SpecificationsVenda.cpf(cpf)
+                    )
+            ), pageable);
+        } else {
+            pagina = vendaRepository.findByVendedor(usuario.getId(),
+                    Specification.where(
+                            SpecificationsVenda.nome(nome).and(
+                                    SpecificationsVenda.cpf(cpf)
+                            )
+                    ), pageable);
         }
-        Optional<Venda> listaUsuario = Optional.ofNullable(vendaRepository.findById(idUsuario).orElseThrow(
-                () -> new EntityNotFoundException("Id não encontrada")));
-        Venda vendaEntity = listaUsuario.get();
 
-        Optional<Venda> listaVenda = Optional.ofNullable(vendaRepository.findById(Long.valueOf(cpf)).orElseThrow(
-                () -> new EntityNotFoundException("CPF não encontrado")));
-        Venda usuarioEntity = listaVenda.get();
-        List<VendaGetDto> vendaDTO = converteVendaDTO(vendaRepository.findVendaByIdAndCpf(usuarioEntity,vendaEntity));
+        VendaListaGetDto vendas = new VendaListaGetDto();
+        vendas.setTotalElementos(pagina.getTotalElements());
+        vendas.setTotalPaginas(pagina.getTotalPages());
+        List<Venda> vendaList = pagina.getContent();
+        List<VendaElementoGetDto> vendaElementoGetDtos = new ArrayList<>();
 
-        return vendaDTO;
+        for (Venda venda : vendaList) {
+            VendaElementoGetDto vendaElementoGetDto = converterVendaParaVendaElementoDto(venda);
+            vendaElementoGetDtos.add(vendaElementoGetDto);
+        }
+
+        vendas.setVendas(vendaElementoGetDtos);
+        return vendas;
     }
 
-    @Transactional
-    public List<VendaGetDto> listar(Long idUsuario, String cpf, String nome, BigDecimal valorTotal ) {
-        if (idUsuario == null && cpf == null && nome == null && valorTotal == null) {
-            List<Venda> lista = vendaRepository.findAll();
-            List<VendaGetDto> listaDTO = converteVendaDTO(lista);
-            if (lista.isEmpty()) {
-                throw new NoSuchElementException("Não existem vendas");
-            }
-            return listaDTO;
-        }
-        List<VendaGetDto> listaDTO = listarVendas(idUsuario, cpf, nome, valorTotal);
-        return listaDTO;
-    }
+    public VendaElementoGetDto converterVendaParaVendaElementoDto(Venda venda) {
+        VendaElementoGetDto vendaDto = new VendaElementoGetDto();
+        vendaDto.setId(venda.getId());
+        vendaDto.setNomeCliente(venda.getComprador().getNome());
+        vendaDto.setCpf(venda.getComprador().getCpf());
+        vendaDto.setTotalVenda(venda.getTotalVenda());
 
-    private List<VendaGetDto> converteVendaDTO(List<Venda> list){
-        List<VendaGetDto> listaDTO = new ArrayList<>();
-        for (Venda venda : list
-        ) {
-            VendaGetDto vendaDTO = new VendaGetDto();
-            vendaDTO.setId(venda.getId());
-            vendaDTO.setCpf(venda.getCpf());
-            vendaDTO.setNomeCliente(venda.getNome());
-            vendaDTO.setTotalVenda(venda.getTotalVenda());
-            listaDTO.add(vendaDTO);
-        }
-        return listaDTO;
+        return vendaDto;
     }
 }

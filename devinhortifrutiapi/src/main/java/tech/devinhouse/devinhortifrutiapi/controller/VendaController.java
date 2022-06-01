@@ -1,14 +1,12 @@
 package tech.devinhouse.devinhortifrutiapi.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tech.devinhouse.devinhortifrutiapi.configuration.TokenService;
-import tech.devinhouse.devinhortifrutiapi.dto.EmailDto;
-import tech.devinhouse.devinhortifrutiapi.dto.SmsDto;
-import tech.devinhouse.devinhortifrutiapi.dto.VendaPostDto;
-import tech.devinhouse.devinhortifrutiapi.dto.VendaGetDto;
+import tech.devinhouse.devinhortifrutiapi.dto.*;
 import tech.devinhouse.devinhortifrutiapi.model.Venda;
 import tech.devinhouse.devinhortifrutiapi.repository.VendaRepository;
 import tech.devinhouse.devinhortifrutiapi.service.RabbitMQService;
@@ -71,28 +69,21 @@ public class VendaController {
     }
 
     @GetMapping("/vendas")
-    public ResponseEntity<List<Venda>> get(
+    public ResponseEntity<VendaListaGetDto> get(
             @RequestParam(required = false) String nome,
             @RequestParam(required = false) String cpf,
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) Integer numeroPagina,
+            @RequestParam(required = false) Integer tamanho,
             @RequestHeader("Authorization") String auth
-    ) {
+    ) throws JsonProcessingException {
         String token = auth.substring(7);
-        Long idUsuario = tokenService.getUsuarioPorId(token);
-        Venda loggedUser = vendaRepository.findById(idUsuario)
-                .orElseThrow(
-                        ()-> new IllegalArgumentException()
-                );
+        UsuarioDTO usuario = tokenService.getUsuario(token);
 
-        if (!loggedUser.canRead("vendas")) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
-        List<VendaGetDto> listVenda = vendaService.listar(nome, cpf, page, size);
-        if (listVenda.isEmpty()) {
+        VendaListaGetDto vendaListaGetDto = vendaService.listarVendas(nome, cpf, numeroPagina, tamanho, usuario);
+        if (vendaListaGetDto.getVendas().isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(listVenda);
+        return ResponseEntity.ok(vendaListaGetDto);
     }
 
 }
