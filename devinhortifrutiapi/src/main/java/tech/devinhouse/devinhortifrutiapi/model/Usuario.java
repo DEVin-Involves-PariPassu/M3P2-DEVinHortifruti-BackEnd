@@ -26,6 +26,10 @@ public class Usuario implements UserDetails {
 
     private Boolean isAdmin;
 
+    public Boolean getAdmin() {
+        return isAdmin;
+    }
+
     public Long getId() {
         return id;
     }
