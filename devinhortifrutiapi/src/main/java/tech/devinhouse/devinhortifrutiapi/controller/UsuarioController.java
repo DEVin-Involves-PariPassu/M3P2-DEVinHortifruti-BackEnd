@@ -17,7 +17,6 @@ import tech.devinhouse.devinhortifrutiapi.service.UsuarioService;
 import tech.devinhouse.devinhortifrutiapi.util.GeradorDeSenha;
 
 import javax.validation.Valid;
-import java.text.NumberFormat;
 import java.util.List;
 
 @RestController
@@ -40,9 +39,12 @@ public class UsuarioController {
     public ResponseEntity<List<Usuario>> get(
             @RequestParam(required = false) String nome,
             @RequestParam(required = false) String dtNascimentoMin,
-            @RequestParam(required = false) String dtNascimentoMax
-            // @RequestHeader("Authorization") String auth
-    ) {
+            @RequestParam(required = false) String dtNascimentoMax,
+            @RequestHeader("Authorization") String auth ) throws JsonProcessingException {
+
+        if(!usuarioEhAdmin(auth)){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
 
         List<Usuario> usuarios = service.listar(nome, dtNascimentoMin, dtNascimentoMax);
         if (usuarios.isEmpty()) {
@@ -53,12 +55,13 @@ public class UsuarioController {
 
     @GetMapping("/{id_usuario}")
     public ResponseEntity<Usuario> getPorId (
-            //@RequestHeader("Authorization") String auth,
-            @PathVariable(name = "id_usuario") Long idUsuario) {
+            @RequestHeader("Authorization") String auth,
+            @PathVariable(name = "id_usuario") Long idUsuario) throws JsonProcessingException {
 
-//        if(!usuarioEhAdmin(auth)){
-//            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-//        }
+        if(!usuarioEhAdmin(auth)){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
         Usuario usuario = service.listarPorId(idUsuario);
 
         return ResponseEntity.ok(usuario);
@@ -66,9 +69,10 @@ public class UsuarioController {
 
     @PostMapping
     public ResponseEntity<Long> post(
-            //@RequestHeader("Authorization") String auth,
-            //@Valid
+            @RequestHeader("Authorization") String auth,
+            @Valid
             @RequestBody UsuarioDTO usuarioDTO) {
+
         Usuario usuario = service.salvar(usuarioDTO);
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         String senhaTextoPlano = GeradorDeSenha.generatePassayPassword();
@@ -102,8 +106,12 @@ public class UsuarioController {
 
     @DeleteMapping("/{id_usuario}")
     public ResponseEntity<List<Usuario>> delete(
-            //@RequestHeader("Authorization") String auth,
-            @PathVariable(name = "id_usuario") Long idUsuario) {
+            @RequestHeader("Authorization") String auth,
+            @PathVariable(name = "id_usuario") Long idUsuario) throws JsonProcessingException {
+
+        if(!usuarioEhAdmin(auth)){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
 
         service.delete(idUsuario);
 
