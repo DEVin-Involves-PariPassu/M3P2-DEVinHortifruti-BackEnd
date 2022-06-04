@@ -1,10 +1,12 @@
 package tech.devinhouse.devinhortifrutiapi.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 // import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tech.devinhouse.devinhortifrutiapi.configuration.TokenService;
 import tech.devinhouse.devinhortifrutiapi.dto.UsuarioDTO;
 import tech.devinhouse.devinhortifrutiapi.model.Usuario;
 import tech.devinhouse.devinhortifrutiapi.repository.UsuarioRepository;
@@ -25,6 +27,9 @@ public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private TokenService tokenService;
 
     public List<Usuario> listar(String nome, String dtNascimentoMinStr, String dtNascimentoMaxStr) {
         LocalDate dtNascimentoMin = verificationDate(dtNascimentoMinStr);
@@ -180,4 +185,19 @@ public class UsuarioService {
                 () -> new EntityNotFoundException("User with id " + id + " was not found." )
         );
     }
+
+    public boolean usuarioEhAdmin(String auth) throws JsonProcessingException {
+        String token = auth.substring(7);
+        Long idUsuario = tokenService.getUsuarioPorId(token);
+        Usuario loggedUser = usuarioRepository.findById(idUsuario).orElseThrow(
+                () -> new IllegalArgumentException("Usuário não encontrado")
+        );
+
+        if (!loggedUser.getIsAdmin()) {
+            return false;
+        }
+        return true;
+    }
+
 }
+

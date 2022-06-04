@@ -7,11 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import tech.devinhouse.devinhortifrutiapi.configuration.TokenService;
 import tech.devinhouse.devinhortifrutiapi.dto.EmailDto;
 import tech.devinhouse.devinhortifrutiapi.dto.UsuarioDTO;
 import tech.devinhouse.devinhortifrutiapi.model.Usuario;
-import tech.devinhouse.devinhortifrutiapi.repository.UsuarioRepository;
 import tech.devinhouse.devinhortifrutiapi.service.RabbitMQService;
 import tech.devinhouse.devinhortifrutiapi.service.UsuarioService;
 import tech.devinhouse.devinhortifrutiapi.util.GeradorDeSenha;
@@ -27,12 +25,6 @@ public class UsuarioController {
     private UsuarioService service;
 
     @Autowired
-    private TokenService tokenService;
-
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-
-    @Autowired
     private RabbitMQService rabbitMQService;
 
     @GetMapping
@@ -42,7 +34,7 @@ public class UsuarioController {
             @RequestParam(required = false) String dtNascimentoMax,
             @RequestHeader("Authorization") String auth ) throws JsonProcessingException {
 
-        if(!usuarioEhAdmin(auth)){
+        if(!service.usuarioEhAdmin(auth)){
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
@@ -58,7 +50,7 @@ public class UsuarioController {
             @RequestHeader("Authorization") String auth,
             @PathVariable(name = "id_usuario") Long idUsuario) throws JsonProcessingException {
 
-        if(!usuarioEhAdmin(auth)){
+        if(!service.usuarioEhAdmin(auth)){
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
@@ -109,26 +101,13 @@ public class UsuarioController {
             @RequestHeader("Authorization") String auth,
             @PathVariable(name = "id_usuario") Long idUsuario) throws JsonProcessingException {
 
-        if(!usuarioEhAdmin(auth)){
+        if(!service.usuarioEhAdmin(auth)){
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         service.delete(idUsuario);
 
         return ResponseEntity.noContent().build();
-    }
-
-    public boolean usuarioEhAdmin(String auth) throws JsonProcessingException {
-        String token = auth.substring(7);
-        Long idUsuario = tokenService.getUsuarioPorId(token);
-        Usuario loggedUser = usuarioRepository.findById(idUsuario).orElseThrow(
-                () -> new IllegalArgumentException("Usuário não encontrado")
-        );
-
-        if (!loggedUser.getIsAdmin()) {
-            return false;
-        }
-        return true;
     }
 
 }
