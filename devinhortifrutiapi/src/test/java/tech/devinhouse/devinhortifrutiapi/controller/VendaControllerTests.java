@@ -2,6 +2,7 @@ package tech.devinhouse.devinhortifrutiapi.controller;
 
 
 import org.junit.jupiter.api.*;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -25,7 +26,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -154,8 +158,8 @@ public class VendaControllerTests {
 
         itemVendaPostLista = new ArrayList<>();
         vendaPost = new VendaPostDto();
-        vendaPost.setIdComprador(ID_COMPRADOR);
-        vendaPost.setIdVendedor(ID_VENDEDOR);
+        vendaPost.setIdComprador(comprador.getId());
+        vendaPost.setIdVendedor(usuario.getId());
         vendaPost.setSiglaEstado(SIGLA_ESTADO);
         vendaPost.setCep(CEP);
         vendaPost.setCidade(CIDADE);
@@ -190,5 +194,49 @@ public class VendaControllerTests {
 
     }
 
+    @Test
+    @DisplayName("POST/vendas")
+    public void deveRetornarOIdDaVendaQuandoPassarUmaVendaValida() throws Exception {
+        when(usuarioRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(usuario));
+        when(compradorRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(comprador));
+        when(vendaService.salvarVenda(vendaPost)).thenReturn(new Venda());
+        when(vendaRepository.save(any())).thenReturn(new Venda());
+
+        usuarioRepository.save(usuario);
+        compradorRepository.save(comprador);
+
+        vendaService.salvarVenda(vendaPost);
+
+
+        String vendaJson = """
+                  {
+                    "idVendedor": 1,
+                    "idComprador": 1,
+                    "cep": "83607056",
+                    "siglaEstado": "PR",
+                    "cidade": "Curitiba",
+                    "logradouro": "Rua tal, 56",
+                    "bairro": "Vila Elizabeth",
+                    "complemento": "Rua sem saida",
+                    "dataEntrega": "12/10/2022",
+                    "itens":
+                     [
+                        {
+                          "idProduto": 1,
+                          "precoUnitario": 33.325,
+                          "quantidade": 12
+                        }                                                                               
+                     ]
+                  }
+                """;
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/vendas")
+                        .header("Content-Type", "application/json")
+                        .content(vendaJson))
+                .andExpect(status().isCreated())
+                .andReturn();
+//                .andExpect(jsonPath("$.idVenda").value(1L));
+
+    }
 
 }
