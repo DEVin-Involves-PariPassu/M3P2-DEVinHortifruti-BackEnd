@@ -3,7 +3,6 @@ package tech.devinhouse.devinhortifrutiapi.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import tech.devinhouse.devinhortifrutiapi.controller.UsuarioController;
 import tech.devinhouse.devinhortifrutiapi.dto.CompradorDTO;
 import tech.devinhouse.devinhortifrutiapi.model.Comprador;
 import tech.devinhouse.devinhortifrutiapi.repository.CompradorRepository;
@@ -22,7 +21,7 @@ public class CompradorService {
     CompradorRepository compradorRepository;
 
     @Autowired
-    UsuarioController usuarioController;
+    UsuarioService usuarioService;
 
     @Transactional
     public Long salvar(CompradorDTO compradorDTO){
@@ -117,7 +116,7 @@ public class CompradorService {
 
     public Comprador getComprador(String auth, String cpf) throws JsonProcessingException {
 
-        if (!usuarioController.usuarioEhAdmin(auth)) {
+        if (!usuarioService.usuarioEhAdmin(auth)) {
             throw new AccessDeniedException("Acesso negado");
         }
 
