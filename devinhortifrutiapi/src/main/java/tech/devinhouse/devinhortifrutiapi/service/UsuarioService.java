@@ -1,6 +1,5 @@
 package tech.devinhouse.devinhortifrutiapi.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 // import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -186,7 +185,7 @@ public class UsuarioService {
         );
     }
 
-    public boolean usuarioEhAdmin(String auth) throws JsonProcessingException {
+    public boolean usuarioEhAdmin(String auth) {
         String token = auth.substring(7);
         Long idUsuario = tokenService.getUsuarioPorId(token);
         Usuario loggedUser = usuarioRepository.findById(idUsuario).orElseThrow(
