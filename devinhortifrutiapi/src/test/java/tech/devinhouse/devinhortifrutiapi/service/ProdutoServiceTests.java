@@ -12,6 +12,7 @@ import tech.devinhouse.devinhortifrutiapi.dto.ProdutoDTO;
 import tech.devinhouse.devinhortifrutiapi.model.Produto;
 import tech.devinhouse.devinhortifrutiapi.repository.ProdutoRepository;
 
+import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.util.Optional;
 
@@ -71,5 +72,19 @@ public class ProdutoServiceTests {
         assertEquals(URL, response.getUrlFoto());
         assertEquals(PRECO, response.getPrecoSugerido());
         Assertions.assertEquals(ATIVO, response.isAtivo());
+    }
+
+    @Test
+    @DisplayName("Produto não encontrado")
+    public void produtoNaoEncontrado() {
+
+        when(produtoRepository.findById(anyLong())).thenThrow(new EntityNotFoundException("Não há produto com este Id."));
+
+        try {
+            produtoService.listarPorId(ID);
+        } catch (Exception e) {
+            assertEquals(EntityNotFoundException.class, e.getClass());
+            assertEquals("Não há produto com este Id.", e.getMessage());
+        }
     }
 }
