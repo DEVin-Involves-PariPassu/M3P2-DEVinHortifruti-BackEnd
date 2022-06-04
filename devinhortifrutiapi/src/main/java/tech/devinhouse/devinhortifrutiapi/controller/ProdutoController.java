@@ -30,7 +30,7 @@ public class ProdutoController {
 
     @PostMapping
     public ResponseEntity<Long> postProduto(
-           @Valid @RequestBody ProdutoDTO produtoDTO
+            @Valid @RequestBody ProdutoDTO produtoDTO
     ){
         Long produtoId = produtoService.adicionaProduto(produtoDTO);
         return new ResponseEntity<>(produtoId, HttpStatus.CREATED);
@@ -38,8 +38,9 @@ public class ProdutoController {
 
 
     @PutMapping(value = "/{id_produto}")
-    public ResponseEntity<Long> putProduto(@NotNull @PathVariable Long id_produto,
-                                    @RequestBody ProdutoDTO produtoDTO) {
+    public ResponseEntity<Long> putProduto(
+            @NotNull @PathVariable Long id_produto,
+            @Valid @RequestBody ProdutoDTO produtoDTO) {
 
         produtoService.atualizar(id_produto, produtoDTO);
         return ResponseEntity.ok(id_produto);
