@@ -8,19 +8,21 @@ public class ProdutoDTO {
 
     private Long id;
 
-     @NotNull @NotBlank (message = "Nome do produto é requerido")
+    @NotNull (message = "O nome do produto é requerido.")
+    @NotBlank (message = "O nome do produto é requerido.")
     private String nome;
 
-     @NotNull(message = "Descrição do produto é requerida")
+    @NotNull(message = "A descrição do produto é requerida.")
+    @NotBlank(message = "A descrição do produto é requerida.")
     private String descricao;
 
-      @NotNull(message = "URL da imagem do produto é requerida")
+    @NotNull(message = "A URL da imagem do produto é requerida.")
     private String urlFoto;
 
-     @NotNull(message = "Preço do produto é requerido")
+    @NotNull(message = "O preço do produto é requerido.")
     private BigDecimal precoSugerido;
 
-     @NotNull(message = "Status do produto é requerido")
+    @NotNull(message = "O status do produto é requerido.")
     private Boolean isAtivo;
 
     public Long getId() {
