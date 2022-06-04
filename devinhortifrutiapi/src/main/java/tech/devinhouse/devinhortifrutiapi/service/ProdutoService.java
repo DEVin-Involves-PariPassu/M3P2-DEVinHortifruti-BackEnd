@@ -27,6 +27,13 @@ public class ProdutoService {
     @Autowired
     UsuarioRepository usuarioRepository;
 
+    @Transactional
+    public Produto listarPorId(Long id) {
+        return produtoRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Não existe Produto com o id "+id)
+        );
+    }
+
     public Long adicionaProduto(ProdutoDTO produtoDTO){
         validaNomeProduto(produtoDTO);
         validaDescricao(produtoDTO);
