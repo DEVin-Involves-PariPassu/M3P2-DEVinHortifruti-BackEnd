@@ -11,6 +11,8 @@ import tech.devinhouse.devinhortifrutiapi.model.Produto;
 import tech.devinhouse.devinhortifrutiapi.model.Usuario;
 import tech.devinhouse.devinhortifrutiapi.repository.ProdutoRepository;
 import tech.devinhouse.devinhortifrutiapi.repository.UsuarioRepository;
+import tech.devinhouse.devinhortifrutiapi.service.exception.AccessDeniedException;
+
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
@@ -26,6 +28,9 @@ public class ProdutoService {
 
     @Autowired
     UsuarioRepository usuarioRepository;
+
+    @Autowired
+    UsuarioService usuarioService;
 
     @Transactional
     public Produto listarPorId(Long id) {
@@ -145,4 +150,11 @@ public class ProdutoService {
         }
         return produtoOptional.get();
     }
+
+    public void verificaAdmin(String auth) {
+        if (!usuarioService.usuarioEhAdmin(auth)) {
+            throw new AccessDeniedException("Acesso negado");
+        }
+    }
+
 }
