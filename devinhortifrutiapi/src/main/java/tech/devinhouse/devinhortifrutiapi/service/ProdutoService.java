@@ -2,11 +2,15 @@ package tech.devinhouse.devinhortifrutiapi.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import tech.devinhouse.devinhortifrutiapi.dto.ProdutoDTO;
 import tech.devinhouse.devinhortifrutiapi.model.Produto;
+import tech.devinhouse.devinhortifrutiapi.model.Usuario;
 import tech.devinhouse.devinhortifrutiapi.repository.ProdutoRepository;
+import tech.devinhouse.devinhortifrutiapi.repository.UsuarioRepository;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
@@ -17,6 +21,9 @@ public class ProdutoService {
 
     @Autowired
     ProdutoRepository produtoRepository;
+
+    @Autowired
+    UsuarioRepository usuarioRepository;
 
     public Long adicionaProduto(ProdutoDTO produtoDTO){
         validaNomeProduto(produtoDTO);
@@ -102,4 +109,19 @@ public class ProdutoService {
         return produto;
     }
 
+    public Produto getProduto(Long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long idUsuarioLogado = (Long) authentication.getPrincipal();
+        Usuario usuarioLogado = usuarioRepository.findUsuarioById(idUsuarioLogado).get();
+
+        if (!usuarioLogado.getIsAdmin()) {
+            throw new IllegalArgumentException("Usuário não é um administrador!");
+        }
+
+        Optional<Produto> produtoOptional = this.produtoRepository.findById(id);
+        if(produtoOptional.isEmpty()) {
+            throw new EntityNotFoundException("Produto não Encontrado!");
+        }
+        return produtoOptional.get();
+    }
 }
