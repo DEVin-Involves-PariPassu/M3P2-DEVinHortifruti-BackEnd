@@ -56,10 +56,15 @@ public class TokenService {
         }
     }
 
-    public Long getUsuarioPorId(String token) throws JsonProcessingException {
+    public Long getUsuarioPorId(String token) {
         Claims claims = Jwts.parser().setSigningKey(this.secret).parseClaimsJws(token).getBody();
         ObjectMapper mapper = new ObjectMapper();
-        UsuarioDTO usuario = mapper.readValue(claims.getSubject(), UsuarioDTO.class);
+        UsuarioDTO usuario = null;
+        try {
+            usuario = mapper.readValue(claims.getSubject(), UsuarioDTO.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
         return usuario.getId();
     }
 

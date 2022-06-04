@@ -1,6 +1,5 @@
 package tech.devinhouse.devinhortifrutiapi.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import tech.devinhouse.devinhortifrutiapi.dto.CompradorDTO;
@@ -114,11 +113,7 @@ public class CompradorService {
         return comprador;
     }
 
-    public Comprador getComprador(String auth, String cpf) throws JsonProcessingException {
-
-        if (!usuarioService.usuarioEhAdmin(auth)) {
-            throw new AccessDeniedException("Acesso negado");
-        }
+    public Comprador getComprador(String cpf) {
 
         Optional<Comprador> compradorOpt = this.compradorRepository.findByCpf(cpf);
         if (compradorOpt.isEmpty()) {
@@ -145,4 +140,11 @@ public class CompradorService {
             comprador.setEmail(compradorDTO.getEmail());
         }
     }
+
+    public void verificaAdmin(String auth) {
+        if (!usuarioService.usuarioEhAdmin(auth)) {
+            throw new AccessDeniedException("Acesso negado");
+        }
+    }
+
 }
