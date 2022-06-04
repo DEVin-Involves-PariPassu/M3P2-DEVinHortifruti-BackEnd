@@ -1,10 +1,13 @@
 package tech.devinhouse.devinhortifrutiapi.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import tech.devinhouse.devinhortifrutiapi.controller.UsuarioController;
 import tech.devinhouse.devinhortifrutiapi.dto.CompradorDTO;
 import tech.devinhouse.devinhortifrutiapi.model.Comprador;
 import tech.devinhouse.devinhortifrutiapi.repository.CompradorRepository;
+import tech.devinhouse.devinhortifrutiapi.service.exception.AccessDeniedException;
 import tech.devinhouse.devinhortifrutiapi.service.exception.RequiredFieldMissingException;
 
 import javax.persistence.EntityExistsException;
@@ -17,6 +20,9 @@ public class CompradorService {
 
     @Autowired
     CompradorRepository compradorRepository;
+
+    @Autowired
+    UsuarioController usuarioController;
 
     @Transactional
     public Long salvar(CompradorDTO compradorDTO){
@@ -109,11 +115,17 @@ public class CompradorService {
         return comprador;
     }
 
-    public Comprador getComprador(String cpf) {
+    public Comprador getComprador(String auth, String cpf) throws JsonProcessingException {
+
+        if (!usuarioController.usuarioEhAdmin(auth)) {
+            throw new AccessDeniedException("Acesso negado");
+        }
+
         Optional<Comprador> compradorOpt = this.compradorRepository.findByCpf(cpf);
         if (compradorOpt.isEmpty()) {
-            throw new EntityNotFoundException("Comprador não encontrado.");
+            throw new EntityNotFoundException("Comprador não encontrado");
         }
+
         return compradorOpt.get();
     }
 

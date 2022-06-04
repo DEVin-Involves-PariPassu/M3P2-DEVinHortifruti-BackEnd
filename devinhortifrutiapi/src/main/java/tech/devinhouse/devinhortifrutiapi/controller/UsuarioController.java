@@ -118,7 +118,7 @@ public class UsuarioController {
         return ResponseEntity.noContent().build();
     }
 
-    private boolean usuarioEhAdmin (String auth) throws JsonProcessingException {
+    public boolean usuarioEhAdmin(String auth) throws JsonProcessingException {
         String token = auth.substring(7);
         Long idUsuario = tokenService.getUsuarioPorId(token);
         Usuario loggedUser = usuarioRepository.findById(idUsuario).orElseThrow(

@@ -1,5 +1,6 @@
 package tech.devinhouse.devinhortifrutiapi.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sun.istack.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,9 +51,10 @@ public class CompradorController {
   
     @GetMapping
     public Comprador get(
-        @RequestParam String cpf
-    ) {
-        return this.compradorService.getComprador(cpf);
+            @RequestHeader("Authorization") String auth,
+            @RequestParam String cpf
+    ) throws JsonProcessingException {
+        return this.compradorService.getComprador(auth, cpf);
     }
 
 }
