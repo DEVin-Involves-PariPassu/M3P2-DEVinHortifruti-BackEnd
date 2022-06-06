@@ -11,6 +11,7 @@ import org.mockito.MockitoAnnotations;
 import tech.devinhouse.devinhortifrutiapi.dto.*;
 import tech.devinhouse.devinhortifrutiapi.model.*;
 import tech.devinhouse.devinhortifrutiapi.repository.*;
+import tech.devinhouse.devinhortifrutiapi.service.exception.RequiredFieldMissingException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -20,8 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -185,26 +185,6 @@ public class VendaServiceTests {
         assertEquals(NOME_CLIENTE, response.getNomeCliente());
     }
 
-
-    /*
- @Test
-    @DisplayName("Produto com preço igual a zero")
-    public void deveLancarUmaExcecaoQuandoTentarAdicionarUmProdutoComPrecoIgualAZero(){
-        when(productRepository.findById(1L)).thenReturn(Optional.of(productEntity));
-        productDTO.setPreco_sugerido(BigDecimal.valueOf(0.00));
-
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            service.insert(productDTO);
-        });
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            service.updateDoPut(1L,productDTO);
-        });
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            service.updateDoPatch(1L,productDTO);
-        });
-
-    }
-     */
 
     @Test
     @DisplayName("Salvar nova venda")
