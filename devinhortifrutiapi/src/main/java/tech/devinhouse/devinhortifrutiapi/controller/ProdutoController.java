@@ -1,10 +1,15 @@
 package tech.devinhouse.devinhortifrutiapi.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tech.devinhouse.devinhortifrutiapi.configuration.TokenService;
 import tech.devinhouse.devinhortifrutiapi.dto.ProdutoDTO;
+import tech.devinhouse.devinhortifrutiapi.dto.UsuarioDTO;
+import tech.devinhouse.devinhortifrutiapi.model.Produto;
 import tech.devinhouse.devinhortifrutiapi.service.ProdutoService;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.*;
@@ -16,6 +21,28 @@ public class ProdutoController {
 
     @Autowired
     ProdutoService produtoService;
+
+    @Autowired
+    private TokenService tokenService;
+
+    @GetMapping
+    public ResponseEntity<Page<Produto>> getListaProdutos(
+            @RequestParam(required = false) String nome,
+            @RequestParam(required = false, defaultValue = "1") Integer pagina,
+            @RequestParam(required = false, defaultValue = "10") Integer tamanhoPagina,
+            @RequestHeader("Authorization") String auth
+    ) throws JsonProcessingException {
+        String token = auth.substring(7);
+        UsuarioDTO usuario = tokenService.getUsuario(token);
+
+        if (!usuario.getIsAdmin()) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+
+        Page<Produto> produtos = produtoService.listarProdutos(nome, pagina, tamanhoPagina);
+        if (produtos.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(produtos);
+    }
 
     @GetMapping(value = "/{id_produto}")
     public ResponseEntity<?> getProduto(
