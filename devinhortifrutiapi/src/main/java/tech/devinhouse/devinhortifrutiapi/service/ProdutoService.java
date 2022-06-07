@@ -1,6 +1,10 @@
 package tech.devinhouse.devinhortifrutiapi.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,6 +41,12 @@ public class ProdutoService {
         return produtoRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Não existe Produto com o id "+id)
         );
+    }
+
+    public Page<Produto> listarProdutos(String nome, Integer pagina, Integer tamanhoPagina) {
+        Pageable pageable = PageRequest.of(pagina -1, tamanhoPagina);
+
+        return produtoRepository.findAll(Specification.where(SpecificationsProduto.nome(nome)), pageable);
     }
 
     public Long adicionaProduto(ProdutoDTO produtoDTO){
