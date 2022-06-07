@@ -12,6 +12,8 @@ public class VendaElementoGetDto {
 
     private BigDecimal totalVenda;
 
+
+
     public VendaElementoGetDto(Long id, String nomeCliente, String cpf, BigDecimal totalVenda) {
         this.id = id;
         this.nomeCliente = nomeCliente;
