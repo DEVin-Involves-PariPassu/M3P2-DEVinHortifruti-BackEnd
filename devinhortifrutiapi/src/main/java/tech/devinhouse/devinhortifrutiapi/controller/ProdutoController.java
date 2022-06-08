@@ -11,8 +11,8 @@ import tech.devinhouse.devinhortifrutiapi.dto.ProdutoDTO;
 import tech.devinhouse.devinhortifrutiapi.dto.UsuarioDTO;
 import tech.devinhouse.devinhortifrutiapi.model.Produto;
 import tech.devinhouse.devinhortifrutiapi.service.ProdutoService;
-import javax.persistence.EntityNotFoundException;
 import javax.validation.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @RestController
@@ -45,17 +45,13 @@ public class ProdutoController {
     }
 
     @GetMapping(value = "/{id_produto}")
-    public ResponseEntity<?> getProduto(
-            @RequestHeader("Authorization") String auth,
-            @RequestParam Long id) {
+    public ResponseEntity<Produto> get(
+            @NotBlank @PathVariable(name = "id_produto") Long id,
+            @RequestHeader("Authorization") String auth
+    ) {
         produtoService.verificaAdmin(auth);
-        try{
-            return ResponseEntity.ok(this.produtoService.getProduto(id));
-        }catch(EntityNotFoundException e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
-        }
+        Produto produto = produtoService.getProduto(id);
+        return ResponseEntity.ok(produto);
     }
 
     @PostMapping
