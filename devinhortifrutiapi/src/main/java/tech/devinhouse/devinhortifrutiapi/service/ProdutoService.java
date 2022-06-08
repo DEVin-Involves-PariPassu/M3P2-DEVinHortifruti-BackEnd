@@ -145,20 +145,10 @@ public class ProdutoService {
         }
     }
 
+    @Transactional
     public Produto getProduto(Long id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long idUsuarioLogado = (Long) authentication.getPrincipal();
-        Usuario usuarioLogado = usuarioRepository.findUsuarioById(idUsuarioLogado).get();
-
-        if (!usuarioLogado.getIsAdmin()) {
-            throw new IllegalArgumentException("Usuário não é um administrador!");
-        }
-
-        Optional<Produto> produtoOptional = this.produtoRepository.findById(id);
-        if(produtoOptional.isEmpty()) {
-            throw new EntityNotFoundException("Produto não Encontrado!");
-        }
-        return produtoOptional.get();
+        return produtoRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("Produto não encontardo"));
     }
 
     public void verificaAdmin(String auth) {
