@@ -165,7 +165,7 @@ public class VendaService {
         vendaDto.setNomeCliente(venda.getComprador().getNome());
         vendaDto.setCpf(venda.getComprador().getCpf());
         vendaDto.setTotalVenda(venda.getTotalVenda());
-
+        vendaDto.setVendaCancelada(venda.getVendaCancelada());
         return vendaDto;
     }
 }

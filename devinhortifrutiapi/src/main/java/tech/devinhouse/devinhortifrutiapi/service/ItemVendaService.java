@@ -9,8 +9,6 @@ import tech.devinhouse.devinhortifrutiapi.model.Produto;
 import tech.devinhouse.devinhortifrutiapi.model.Venda;
 import tech.devinhouse.devinhortifrutiapi.repository.ItemVendaRepository;
 import tech.devinhouse.devinhortifrutiapi.repository.ProdutoRepository;
-import tech.devinhouse.devinhortifrutiapi.repository.VendaRepository;
-
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -38,7 +36,7 @@ public class ItemVendaService {
         ) {
             ItemVendaGetDto itemDto = new ItemVendaGetDto();
             itemDto.setUrlFoto(item.getProduto().getUrlFoto());
-            itemDto.setNome(item.getProduto().getName());
+            itemDto.setNome(item.getProduto().getNome());
             BigDecimal precoUnitario = item.getPrecoUnitario();
             itemDto.setQuantidade(item.getQuantidade());
 

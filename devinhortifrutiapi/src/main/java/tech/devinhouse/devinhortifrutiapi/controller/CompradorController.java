@@ -9,7 +9,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.devinhouse.devinhortifrutiapi.dto.CompradorDTO;
 import tech.devinhouse.devinhortifrutiapi.model.Comprador;
 import tech.devinhouse.devinhortifrutiapi.service.CompradorService;
-
 import javax.validation.Valid;
 import java.net.URI;
 
@@ -22,9 +21,10 @@ public class CompradorController {
 
     @PostMapping
     public ResponseEntity<Long> post(
-//            @RequestHeader("Authorization") String auth,
+            @RequestHeader("Authorization") String auth,
             @Valid @RequestBody CompradorDTO compradorDTO
     ) {
+        compradorService.verificaAdmin(auth);
         Long idComprador = compradorService.salvar(compradorDTO);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -37,22 +37,25 @@ public class CompradorController {
     @PutMapping(value = "/{id_comprador}")
     public ResponseEntity<Long> put(
             @NotNull @PathVariable Long id_comprador,
-//            @RequestHeader("Authorization") String auth,
+            @RequestHeader("Authorization") String auth,
             @Valid @RequestBody CompradorDTO compradorDTO) {
 
         if (id_comprador == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
+        compradorService.verificaAdmin(auth);
         compradorService.updateDoPut(id_comprador, compradorDTO);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.ok(id_comprador);
     }
-  
+
     @GetMapping
     public Comprador get(
-        @RequestParam String cpf
-    ) {
-        return this.compradorService.getComprador(cpf);
+            @RequestHeader("Authorization") String auth,
+            @RequestParam String cpf
+            ) {
+                compradorService.verificaAdmin(auth);
+                return this.compradorService.getComprador(cpf);
     }
 
 }

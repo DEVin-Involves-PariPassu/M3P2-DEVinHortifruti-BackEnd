@@ -12,11 +12,14 @@ public class VendaElementoGetDto {
 
     private BigDecimal totalVenda;
 
-    public VendaElementoGetDto(Long id, String nomeCliente, String cpf, BigDecimal totalVenda) {
+    private Boolean vendaCancelada;
+
+    public VendaElementoGetDto(Long id, String nomeCliente, String cpf, BigDecimal totalVenda, Boolean vendaCancelada) {
         this.id = id;
         this.nomeCliente = nomeCliente;
         this.cpf = cpf;
         this.totalVenda = totalVenda;
+        this.vendaCancelada = vendaCancelada;
     }
 
     public VendaElementoGetDto() {
@@ -52,5 +55,13 @@ public class VendaElementoGetDto {
 
     public void setTotalVenda(BigDecimal totalVenda) {
         this.totalVenda = totalVenda;
+    }
+
+    public Boolean getVendaCancelada() {
+        return vendaCancelada;
+    }
+
+    public void setVendaCancelada(Boolean vendaCancelada) {
+        this.vendaCancelada = vendaCancelada;
     }
 }

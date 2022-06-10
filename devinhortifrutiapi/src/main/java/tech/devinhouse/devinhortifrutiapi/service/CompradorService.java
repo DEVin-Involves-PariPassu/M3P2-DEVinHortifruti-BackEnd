@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import tech.devinhouse.devinhortifrutiapi.dto.CompradorDTO;
 import tech.devinhouse.devinhortifrutiapi.model.Comprador;
 import tech.devinhouse.devinhortifrutiapi.repository.CompradorRepository;
+import tech.devinhouse.devinhortifrutiapi.service.exception.AccessDeniedException;
 import tech.devinhouse.devinhortifrutiapi.service.exception.RequiredFieldMissingException;
 
 import javax.persistence.EntityExistsException;
@@ -17,6 +18,9 @@ public class CompradorService {
 
     @Autowired
     CompradorRepository compradorRepository;
+
+    @Autowired
+    UsuarioService usuarioService;
 
     @Transactional
     public Long salvar(CompradorDTO compradorDTO){
@@ -110,10 +114,12 @@ public class CompradorService {
     }
 
     public Comprador getComprador(String cpf) {
+
         Optional<Comprador> compradorOpt = this.compradorRepository.findByCpf(cpf);
         if (compradorOpt.isEmpty()) {
-            throw new EntityNotFoundException("Comprador não encontrado.");
+            throw new EntityNotFoundException("Comprador não encontrado");
         }
+
         return compradorOpt.get();
     }
 
@@ -134,4 +140,11 @@ public class CompradorService {
             comprador.setEmail(compradorDTO.getEmail());
         }
     }
+
+    public void verificaAdmin(String auth) {
+        if (!usuarioService.usuarioEhAdmin(auth)) {
+            throw new AccessDeniedException("Acesso negado");
+        }
+    }
+
 }
