@@ -3,6 +3,8 @@ package tech.devinhouse.devinhortifrutiapi.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -36,17 +38,22 @@ public class UsuarioController {
     private RabbitMQService rabbitMQService;
 
     @GetMapping
+
     public ResponseEntity<List<Usuario>> get(
             @RequestParam(required = false) String nome,
-            @RequestParam(required = false) String dtNascimentoMin,
-            @RequestParam(required = false) String dtNascimentoMax,
+            @RequestParam(required = false) String login,
+            @RequestParam(required = false) Integer totalDePaginas,
+            @RequestParam(required = false) Integer totalPorPaginas,
             @RequestHeader("Authorization") String auth ) throws JsonProcessingException {
-
-        if(!usuarioEhAdmin(auth)){
+        if(usuarioEhAdmin(auth)) {
+        Page<Usuario> page = usuarioRepository.findAll(PageRequest.of(0,2));
+        return (ResponseEntity<List<Usuario>>) page.getContent().listIterator();
+        }
+        else if (!usuarioEhAdmin(auth)){
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        List<Usuario> usuarios = service.listar(nome, dtNascimentoMin, dtNascimentoMax);
+        List<Usuario> usuarios = service.listarTodosOsUsuarios(nome, login, totalDePaginas, totalPorPaginas);
         if (usuarios.isEmpty()) {
             return ResponseEntity.noContent().build();
         }

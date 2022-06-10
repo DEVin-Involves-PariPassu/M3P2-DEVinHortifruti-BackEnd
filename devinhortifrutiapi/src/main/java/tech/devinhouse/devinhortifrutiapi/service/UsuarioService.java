@@ -180,4 +180,19 @@ public class UsuarioService {
                 () -> new EntityNotFoundException("User with id " + id + " was not found." )
         );
     }
+
+    public List<Usuario> listarTodosOsUsuarios
+            (String nome, String login, Integer totalDePaginas, Integer totalPorPaginas) {
+                return usuarioRepository.findAll(
+                Specification.where(
+                        SpecificationsUsuario.nome(nome).and(
+                                SpecificationsUsuario.login(login).and(
+                                        SpecificationsUsuario.totalDePaginas(totalDePaginas).and(
+                                                SpecificationsUsuario.totalPorPaginas(totalPorPaginas)
+                                        )
+                                )
+                        )
+                 )
+           );
+    }
 }
