@@ -86,4 +86,28 @@ public class VendaController {
         return ResponseEntity.ok(vendaListaGetDto);
     }
 
+    @PutMapping("/{id_venda}")
+    public ResponseEntity<Void> deletaVenda(
+            @PathVariable(name = "id_venda") Long idVenda,
+            @RequestHeader("Authorization") String auth)
+        {
+
+        Venda venda = vendaService.CancelarVenda(idVenda);
+        EmailDto emailDto = new EmailDto();
+        emailDto.setDestinatario(venda.getComprador().getEmail());
+        emailDto.setTitulo("Dev in Hortifruti - Compra Cancelada - pedido " + idVenda);
+
+        String mensagem = String.format("Prezado(a) %s, sua compra pedido %s foi cancelada com sucesso!",
+                venda.getComprador().getNome(), venda.getId());
+
+        emailDto.setMensagem(mensagem);
+        rabbitMQService.enviarEmail(emailDto);
+
+        if(!venda.getComprador().getTelefone().isEmpty()){
+            SmsDto smsDto = new SmsDto(venda.getComprador().getTelefone(), mensagem);
+            rabbitMQService.enviarSms(smsDto);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
 }
