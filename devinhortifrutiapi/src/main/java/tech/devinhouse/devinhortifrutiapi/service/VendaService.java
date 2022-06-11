@@ -168,4 +168,11 @@ public class VendaService {
         vendaDto.setVendaCancelada(venda.getVendaCancelada());
         return vendaDto;
     }
+
+    public Venda CancelarVenda(Long idVenda) {
+        Venda venda = vendaRepository.findById(idVenda).orElseThrow(() -> new EntityNotFoundException("Venda não encontrada"));
+        venda.setVendaCancelada(true);
+        return vendaRepository.save(venda);
+    }
+
 }
