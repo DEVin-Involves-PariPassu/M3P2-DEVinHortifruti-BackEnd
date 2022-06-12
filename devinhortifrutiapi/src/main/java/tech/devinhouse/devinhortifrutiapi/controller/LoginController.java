@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import tech.devinhouse.devinhortifrutiapi.configuration.TokenService;
 import tech.devinhouse.devinhortifrutiapi.dto.LoginDTO;
 import tech.devinhouse.devinhortifrutiapi.dto.TokenDTO;
+import tech.devinhouse.devinhortifrutiapi.model.Usuario;
 
 import javax.validation.Valid;
 
@@ -35,8 +36,9 @@ public class LoginController {
         UsernamePasswordAuthenticationToken login = loginDTO.converter();
         try{
             Authentication authentication = authenticationManager.authenticate(login);
+            Usuario usuario = (Usuario) authentication.getPrincipal();
             String token = tokenService.gerarToken(authentication);
-            return ResponseEntity.ok(new TokenDTO(token, "Bearer"));
+            return ResponseEntity.ok(new TokenDTO(token, "Bearer", usuario.getIsAdmin()));
         }
         catch (AuthenticationException | JsonProcessingException e){
             return new ResponseEntity<Void>(HttpStatus.UNAUTHORIZED);
