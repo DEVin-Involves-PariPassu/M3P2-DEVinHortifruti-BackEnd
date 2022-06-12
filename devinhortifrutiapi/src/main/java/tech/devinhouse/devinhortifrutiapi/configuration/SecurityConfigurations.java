@@ -73,7 +73,7 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
     public CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();
 
-//        configuration.setAllowedOrigins(List.of("https://www.yourdomain.com")); // www - obligatory
+        configuration.setAllowedOrigins(List.of("http://localhost:")); // www - obligatory
         configuration.setAllowedOriginPatterns(List.of("*"));  //set access from all domains
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowCredentials(true);
