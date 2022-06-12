@@ -2,9 +2,7 @@ package tech.devinhouse.devinhortifrutiapi.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -31,25 +29,22 @@ public class UsuarioController {
 
     @GetMapping
 
-    public ResponseEntity<List<Usuario>> get(
+    public ResponseEntity<Page<Usuario>> getListaUsuarios(
+            @RequestParam(required = false) Long id,
             @RequestParam(required = false) String nome,
             @RequestParam(required = false) String login,
-            @RequestParam(required = false) Integer totalDePaginas,
-            @RequestParam(required = false) Integer totalPorPaginas,
-            @RequestHeader("Authorization") String auth ) throws JsonProcessingException {
-
-        if(usuarioEhAdmin(auth)) {
-        Page<Usuario> page = usuarioRepository.findAll(PageRequest.of(0,2));
-        return (ResponseEntity<List<Usuario>>) page.getContent().listIterator();
-        }
-        else if (!usuarioEhAdmin(auth)){
+            @RequestParam(required = false, defaultValue = "0") Integer totalDePaginas,
+            @RequestParam(required = false, defaultValue = "2") Integer totalPorPaginas,
+            @RequestHeader("Authorization") String auth
+    ) throws JsonProcessingException {
 
         if(!service.usuarioEhAdmin(auth)){
 
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        List<Usuario> usuarios = service.listarTodosOsUsuarios(nome, login, totalDePaginas, totalPorPaginas);
+        Page<Usuario> usuarios = service.listarTodosOsUsuarios(id, nome, login, totalPorPaginas);
+
         if (usuarios.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -119,19 +114,5 @@ public class UsuarioController {
         service.delete(idUsuario);
 
         return ResponseEntity.noContent().build();
-    }
-
-
-    private boolean usuarioEhAdmin (String auth) throws JsonProcessingException {
-        String token = auth.substring(7);
-        Long idUsuario = tokenService.getUsuarioPorId(token);
-        Usuario loggedUser = usuarioRepository.findById(idUsuario).orElseThrow(
-                () -> new IllegalArgumentException("Usuário não encontrado")
-        );
-
-        if (!loggedUser.getIsAdmin()) {
-            return false;
-        }
-        return true;
     }
 }

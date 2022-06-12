@@ -7,6 +7,14 @@ import java.time.LocalDate;
 
 public class SpecificationsUsuario {
 
+    public static Specification<Usuario> id(Long id){
+        return (root, query, criteriaBuilder) -> {
+            if(id == null) {
+                return criteriaBuilder.like(root.get("id"), "%%");
+            } else return criteriaBuilder.like(root.get("id"), "%" + id + "%");
+        };
+    }
+
     public static Specification<Usuario> nome(String nome){
         return (root, query, criteriaBuilder) -> {
             if(nome == null) {

@@ -10,7 +10,7 @@ import java.util.Optional;
 
 
 @Repository
-public interface UsuarioRepository extends PagingAndSortingRepository<Usuario, Long>, JpaSpecificationExecutor<Usuario> {
+public interface UsuarioRepository extends JpaSpecificationExecutor<Usuario>, PagingAndSortingRepository<Usuario, Long> {
 
     Optional<Usuario> findUsuarioByLogin(String login);
 

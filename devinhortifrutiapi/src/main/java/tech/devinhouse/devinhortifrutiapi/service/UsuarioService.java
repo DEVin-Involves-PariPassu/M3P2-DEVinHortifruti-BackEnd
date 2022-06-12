@@ -1,6 +1,10 @@
 package tech.devinhouse.devinhortifrutiapi.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 // import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -185,19 +189,18 @@ public class UsuarioService {
         );
     }
 
-    public List<Usuario> listarTodosOsUsuarios
-            (String nome, String login, Integer totalDePaginas, Integer totalPorPaginas) {
-                return usuarioRepository.findAll(
+    public Page<Usuario> listarTodosOsUsuarios
+            (Long id, String nome, String login, Integer totalDePaginas) {
+        Pageable pageable = PageRequest.of(0, 2, Sort.by("nome"));
+        return (Page<Usuario>) usuarioRepository.findAll(
                 Specification.where(
                         SpecificationsUsuario.nome(nome).and(
                                 SpecificationsUsuario.login(login).and(
-                                        SpecificationsUsuario.totalDePaginas(totalDePaginas).and(
-                                                SpecificationsUsuario.totalPorPaginas(totalPorPaginas)
-                                        )
+                                        SpecificationsUsuario.id(id)
                                 )
                         )
-                 )
-           );
+                )
+        );
     }
 
     public boolean usuarioEhAdmin(String auth) {
