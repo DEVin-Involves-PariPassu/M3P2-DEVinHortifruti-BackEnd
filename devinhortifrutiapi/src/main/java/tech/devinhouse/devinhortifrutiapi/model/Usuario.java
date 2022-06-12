@@ -13,7 +13,7 @@ public class Usuario implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usuarioger")
-    @SequenceGenerator(name = "usuarioger", sequenceName = "usuario_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "usuarioger", sequenceName = "usuarios_id_seq", allocationSize = 1)
     private Long id;
 
     private String login;
