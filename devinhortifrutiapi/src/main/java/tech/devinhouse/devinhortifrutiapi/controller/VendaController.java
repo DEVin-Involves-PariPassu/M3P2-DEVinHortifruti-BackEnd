@@ -34,8 +34,10 @@ public class VendaController {
 
     @PostMapping
     public ResponseEntity<Long> post(
+            @RequestHeader("Authorization") String auth,
             @Valid @RequestBody VendaPostDto vendaPostDto
     ) {
+        vendaService.verificaAdmin(auth);
         var novaVenda = vendaService.salvarVenda( vendaPostDto);
         EmailDto emailDto = new EmailDto();
         emailDto.setDestinatario(novaVenda.getComprador().getEmail());
@@ -61,9 +63,11 @@ public class VendaController {
 
     @GetMapping("/{id_venda}")
     public ResponseEntity<VendaGetDto> getPorId(
-            @PathVariable(name = "id_venda") Long idVenda,
-            @RequestHeader("Authorization") String auth
+            @RequestHeader("Authorization") String auth,
+            @PathVariable(name = "id_venda") Long idVenda
+
     ){
+        vendaService.verificaAdmin(auth);
         VendaGetDto venda = vendaService.listarPorId(idVenda);
         return ResponseEntity.ok(venda);
     }
