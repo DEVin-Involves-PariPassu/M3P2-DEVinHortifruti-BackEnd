@@ -2,7 +2,7 @@ package tech.devinhouse.devinhortifrutiapi.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -28,17 +28,23 @@ public class UsuarioController {
     private RabbitMQService rabbitMQService;
 
     @GetMapping
-    public ResponseEntity<List<Usuario>> get(
+
+    public ResponseEntity<Page<Usuario>> getListaUsuarios(
+//            @RequestParam(required = false) Long id,
             @RequestParam(required = false) String nome,
-            @RequestParam(required = false) String dtNascimentoMin,
-            @RequestParam(required = false) String dtNascimentoMax,
-            @RequestHeader("Authorization") String auth ) throws JsonProcessingException {
+            @RequestParam(required = false) String login,
+            @RequestParam(required = false, defaultValue = "0") Integer totalDePaginas,
+            @RequestParam(required = false, defaultValue = "10") Integer totalPorPaginas,
+            @RequestHeader("Authorization") String auth
+    ) throws JsonProcessingException {
 
         if(!service.usuarioEhAdmin(auth)){
+
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        List<Usuario> usuarios = service.listar(nome, dtNascimentoMin, dtNascimentoMax);
+        Page<Usuario> usuarios = service.listarTodosOsUsuarios(nome, login, totalPorPaginas);
+
         if (usuarios.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -109,5 +115,4 @@ public class UsuarioController {
 
         return ResponseEntity.noContent().build();
     }
-
 }
