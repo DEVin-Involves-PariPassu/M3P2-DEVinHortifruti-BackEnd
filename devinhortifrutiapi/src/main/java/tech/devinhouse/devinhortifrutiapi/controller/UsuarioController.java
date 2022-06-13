@@ -30,11 +30,11 @@ public class UsuarioController {
     @GetMapping
 
     public ResponseEntity<Page<Usuario>> getListaUsuarios(
-            @RequestParam(required = false) Long id,
+//            @RequestParam(required = false) Long id,
             @RequestParam(required = false) String nome,
             @RequestParam(required = false) String login,
             @RequestParam(required = false, defaultValue = "0") Integer totalDePaginas,
-            @RequestParam(required = false, defaultValue = "2") Integer totalPorPaginas,
+            @RequestParam(required = false, defaultValue = "10") Integer totalPorPaginas,
             @RequestHeader("Authorization") String auth
     ) throws JsonProcessingException {
 
@@ -43,7 +43,7 @@ public class UsuarioController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        Page<Usuario> usuarios = service.listarTodosOsUsuarios(id, nome, login, totalPorPaginas);
+        Page<Usuario> usuarios = service.listarTodosOsUsuarios(nome, login, totalPorPaginas);
 
         if (usuarios.isEmpty()) {
             return ResponseEntity.noContent().build();
