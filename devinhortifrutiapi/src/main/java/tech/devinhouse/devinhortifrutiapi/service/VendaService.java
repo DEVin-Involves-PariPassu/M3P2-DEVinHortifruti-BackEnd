@@ -14,6 +14,7 @@ import tech.devinhouse.devinhortifrutiapi.repository.CompradorRepository;
 import tech.devinhouse.devinhortifrutiapi.repository.SpecificationsVenda;
 import tech.devinhouse.devinhortifrutiapi.repository.UsuarioRepository;
 import tech.devinhouse.devinhortifrutiapi.repository.VendaRepository;
+import tech.devinhouse.devinhortifrutiapi.service.exception.AccessDeniedException;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
@@ -39,6 +40,9 @@ public class VendaService {
 
     @Autowired
     CompradorRepository compradorRepository;
+
+    @Autowired
+    UsuarioService usuarioService;
 
 
     public Venda salvarVenda(VendaPostDto vendaPostDto) {
@@ -173,6 +177,12 @@ public class VendaService {
         Venda venda = vendaRepository.findById(idVenda).orElseThrow(() -> new EntityNotFoundException("Venda não encontrada"));
         venda.setVendaCancelada(true);
         return vendaRepository.save(venda);
+    }
+
+    public void verificaAdmin(String auth) {
+        if (!usuarioService.usuarioEhAdmin(auth)) {
+            throw new AccessDeniedException("Acesso negado");
+        }
     }
 
 }
