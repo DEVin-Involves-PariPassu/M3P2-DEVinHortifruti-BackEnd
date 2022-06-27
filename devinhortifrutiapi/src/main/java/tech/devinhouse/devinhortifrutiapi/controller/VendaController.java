@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.devinhouse.devinhortifrutiapi.configuration.TokenService;
 import tech.devinhouse.devinhortifrutiapi.dto.*;
 import tech.devinhouse.devinhortifrutiapi.model.Venda;
@@ -13,6 +14,7 @@ import tech.devinhouse.devinhortifrutiapi.service.RabbitMQService;
 import tech.devinhouse.devinhortifrutiapi.service.VendaService;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.text.NumberFormat;
 import java.util.List;
 
@@ -39,6 +41,11 @@ public class VendaController {
     ) {
         vendaService.verificaAdmin(auth);
         var novaVenda = vendaService.salvarVenda( vendaPostDto);
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(novaVenda.getId()).toUri();
+
         EmailDto emailDto = new EmailDto();
         emailDto.setDestinatario(novaVenda.getComprador().getEmail());
         emailDto.setTitulo("Dev in Hortifruti - Detalhes da sua compra");
@@ -58,7 +65,8 @@ public class VendaController {
             SmsDto smsDto = new SmsDto(novaVenda.getComprador().getTelefone(), mensagem);
             rabbitMQService.enviarSms(smsDto);
         }
-        return new ResponseEntity<>(novaVenda.getId(), HttpStatus.CREATED);
+
+        return ResponseEntity.created(location).body(novaVenda.getId());
     }
 
     @GetMapping("/{id_venda}")
