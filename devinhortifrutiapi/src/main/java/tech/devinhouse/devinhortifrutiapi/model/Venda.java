@@ -46,7 +46,7 @@ public class Venda {
     @Column (name = "dt_entrega")
     private LocalDate dataEntrega;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "venda", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "venda", fetch = FetchType.LAZY)
     private List<ItemVenda> itens;
 
     @Column(name = "venda_cancelada")

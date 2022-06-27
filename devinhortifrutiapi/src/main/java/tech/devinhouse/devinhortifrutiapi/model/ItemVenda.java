@@ -10,11 +10,11 @@ public class ItemVenda {
     @SequenceGenerator(name = "item_venda_ger", sequenceName = "item_venda_id_seq", allocationSize = 1)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_venda", referencedColumnName = "id")
     private Venda venda;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_produto", referencedColumnName = "id")
     private Produto produto;
 
