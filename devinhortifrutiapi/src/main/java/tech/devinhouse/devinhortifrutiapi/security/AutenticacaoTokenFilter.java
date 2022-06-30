@@ -1,4 +1,4 @@
-package tech.devinhouse.devinhortifrutiapi.configuration;
+package tech.devinhouse.devinhortifrutiapi.security;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

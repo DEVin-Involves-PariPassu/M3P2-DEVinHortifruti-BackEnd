@@ -1,4 +1,4 @@
-package tech.devinhouse.devinhortifrutiapi.configuration;
+package tech.devinhouse.devinhortifrutiapi.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

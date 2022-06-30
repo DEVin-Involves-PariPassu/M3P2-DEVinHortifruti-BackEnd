@@ -1,4 +1,4 @@
-package tech.devinhouse.devinhortifrutiapi.configuration;
+package tech.devinhouse.devinhortifrutiapi.security;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
