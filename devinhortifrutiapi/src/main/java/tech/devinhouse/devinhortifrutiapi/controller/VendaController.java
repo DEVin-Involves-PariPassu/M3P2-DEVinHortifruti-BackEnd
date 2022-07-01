@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import tech.devinhouse.devinhortifrutiapi.configuration.TokenService;
+import tech.devinhouse.devinhortifrutiapi.security.TokenService;
 import tech.devinhouse.devinhortifrutiapi.dto.*;
 import tech.devinhouse.devinhortifrutiapi.model.Venda;
 import tech.devinhouse.devinhortifrutiapi.repository.VendaRepository;
@@ -104,7 +104,7 @@ public class VendaController {
             @RequestHeader("Authorization") String auth)
         {
 
-        Venda venda = vendaService.CancelarVenda(idVenda);
+        Venda venda = vendaService.cancelarVenda(idVenda);
         EmailDto emailDto = new EmailDto();
         emailDto.setDestinatario(venda.getComprador().getEmail());
         emailDto.setTitulo("Dev in Hortifruti - Compra Cancelada - pedido " + idVenda);

@@ -31,7 +31,7 @@ public class SpecificationsUsuario {
         };
     }
 
-    public static Specification<Usuario>totalDePaginas(Integer totalDePaginas){
+    public static Specification<Usuario> totalDePaginas(Integer totalDePaginas){
         return (root, query, criteriaBuilder) -> {
             if(totalDePaginas == null) {
                 return criteriaBuilder.like(root.get("totalDePaginas"), "%%");
@@ -39,7 +39,7 @@ public class SpecificationsUsuario {
         };
     }
 
-    public static Specification<Usuario>totalPorPaginas(Integer totalPorPaginas){
+    public static Specification<Usuario> totalPorPaginas(Integer totalPorPaginas){
         return (root, query, criteriaBuilder) -> {
             if(totalPorPaginas == null) {
                 return criteriaBuilder.like(root.get("totalPorPagina"), "%%");

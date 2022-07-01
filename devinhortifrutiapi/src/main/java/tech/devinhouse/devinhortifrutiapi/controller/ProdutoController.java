@@ -6,14 +6,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import tech.devinhouse.devinhortifrutiapi.configuration.TokenService;
+import tech.devinhouse.devinhortifrutiapi.security.TokenService;
 import tech.devinhouse.devinhortifrutiapi.dto.ProdutoDTO;
 import tech.devinhouse.devinhortifrutiapi.dto.UsuarioDTO;
 import tech.devinhouse.devinhortifrutiapi.model.Produto;
 import tech.devinhouse.devinhortifrutiapi.service.ProdutoService;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.net.URI;
+
 
 @RestController
 @RequestMapping("/produto")
@@ -61,7 +64,10 @@ public class ProdutoController {
     ){
         produtoService.verificaAdmin(auth);
         Long produtoId = produtoService.adicionaProduto(produtoDTO);
-        return new ResponseEntity<>(produtoId, HttpStatus.CREATED);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(produtoId).toUri();
+        return ResponseEntity.created(location).body(produtoId);
     }
 
 
