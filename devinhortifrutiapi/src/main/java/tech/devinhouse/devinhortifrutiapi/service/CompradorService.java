@@ -96,7 +96,7 @@ public class CompradorService {
             comprador.setNome(compradorDTO.getNome());
         if(compradorDTO.getTelefone() !=null)
             comprador.setTelefone(compradorDTO.getTelefone());
-
+        compradorRepository.save(comprador);
         return id_comprador;
     }
 
