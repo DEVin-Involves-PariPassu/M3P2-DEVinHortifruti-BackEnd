@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 import tech.devinhouse.devinhortifrutiapi.model.Usuario;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.domain.*;
 
 import java.util.Optional;
 
@@ -18,6 +20,6 @@ public interface UsuarioRepository extends JpaSpecificationExecutor<Usuario>, Pa
 
     Optional<Usuario> findUsuarioById(Long usuarioId);
 
-
+    Page<Usuario> findAll(Specification spec , Pageable pageable);
 }
 
