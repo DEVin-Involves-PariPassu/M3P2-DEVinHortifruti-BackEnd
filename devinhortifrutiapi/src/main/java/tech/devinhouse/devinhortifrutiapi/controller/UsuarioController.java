@@ -43,7 +43,7 @@ public class UsuarioController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        Page<Usuario> usuarios = service.listarTodosOsUsuarios(nome, login, totalPorPaginas);
+        Page<Usuario> usuarios = service.listarTodosOsUsuarios(nome, login, totalDePaginas, totalPorPaginas);
 
         if (usuarios.isEmpty()) {
             return ResponseEntity.noContent().build();

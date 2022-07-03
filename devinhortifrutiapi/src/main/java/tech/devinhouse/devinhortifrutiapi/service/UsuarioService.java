@@ -187,16 +187,18 @@ public class UsuarioService {
     }
 
     public Page<Usuario> listarTodosOsUsuarios
-            (String nome, String login, Integer totalDePaginas) {
-        Pageable pageable = PageRequest.of(0, 10, Sort.by("nome"));
-        List<Usuario> usuarios =  usuarioRepository.findAll(
+            (String nome, String login,Integer totalDePaginas ,Integer totalPorPaginas) {
+        Pageable pageable = PageRequest.of(totalDePaginas,totalPorPaginas, Sort.by("nome"));
+        Page<Usuario> usuarios =  usuarioRepository.findAll(
+
                 Specification.where(
                         SpecificationsUsuario.nome(nome).and(
                                 SpecificationsUsuario.login(login)
                         )
-                )
+                ), pageable
         );
-        return new PageImpl(usuarios, pageable, calculateTotal(Long.valueOf(usuarios.size()), pageable));
+        return usuarios;
+       // return new PageImpl(usuarios, pageable, calculateTotal(Long.valueOf(usuarios.size()), pageable));
     }
 
     public long calculateTotal(Long listSize, Pageable pageable) {
