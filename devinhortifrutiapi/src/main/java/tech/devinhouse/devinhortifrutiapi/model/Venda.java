@@ -12,7 +12,7 @@ public class Venda {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vendager")
-    @SequenceGenerator(name = "vendager", sequenceName = "venda_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "vendager", sequenceName = "vendas_id_seq", allocationSize = 1)
 
     private Long id;
 
