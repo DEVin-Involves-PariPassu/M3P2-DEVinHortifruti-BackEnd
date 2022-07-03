@@ -173,7 +173,7 @@ public class VendaService {
         return vendaDto;
     }
 
-    public Venda CancelarVenda(Long idVenda) {
+    public Venda cancelarVenda(Long idVenda) {
         Venda venda = vendaRepository.findById(idVenda).orElseThrow(() -> new EntityNotFoundException("Venda não encontrada"));
         venda.setVendaCancelada(true);
         return vendaRepository.save(venda);

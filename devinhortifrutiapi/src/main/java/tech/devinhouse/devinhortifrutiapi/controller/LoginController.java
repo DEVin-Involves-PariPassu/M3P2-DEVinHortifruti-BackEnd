@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-import tech.devinhouse.devinhortifrutiapi.configuration.TokenService;
+import tech.devinhouse.devinhortifrutiapi.security.TokenService;
 import tech.devinhouse.devinhortifrutiapi.dto.LoginDTO;
 import tech.devinhouse.devinhortifrutiapi.dto.TokenDTO;
 import tech.devinhouse.devinhortifrutiapi.model.Usuario;
