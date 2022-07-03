@@ -50,61 +50,17 @@ public class ProdutoService {
     }
 
     public Long adicionaProduto(ProdutoDTO produtoDTO){
-        validaNomeProduto(produtoDTO);
-        validaDescricao(produtoDTO);
-        validaUrlFoto(produtoDTO);
-        validaPrecoProduto(produtoDTO);
-        validaProdutoAtivo(produtoDTO);
-        Produto produto = new Produto();
 
-        produto.setId(produtoDTO.getId());
+        Produto produto = new Produto();
         produto.setNome(produtoDTO.getNome());
         produto.setDescricao(produtoDTO.getDescricao());
         produto.setUrlFoto(produtoDTO.getUrlFoto());
         produto.setPrecoSugerido(produtoDTO.getPrecoSugerido());
         produto.setIsAtivo(produtoDTO.getIsAtivo());
-
         produtoRepository.save(produto);
         return produto.getId();
     }
 
-    private void validaNomeProduto(ProdutoDTO produtoDTO){
-        if (produtoDTO.getNome() == null || produtoDTO.getNome().isEmpty()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nome é requerido.");
-        }
-        Optional<Produto> optionalProduto = this.produtoRepository.findAllByNome(produtoDTO.getNome());
-
-        if (optionalProduto.isPresent()) {
-            throw new EntityExistsException("Este nome de produto já existe.");
-        }
-    }
-
-    private void validaDescricao(ProdutoDTO produtoDTO){
-        if (produtoDTO.getDescricao() == null || produtoDTO.getDescricao().isEmpty()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A descrição é requerida.");
-        }
-    }
-
-    private void validaUrlFoto(ProdutoDTO produtoDTO){
-        if (produtoDTO.getUrlFoto() == null || produtoDTO.getUrlFoto().isEmpty()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A URL da foto é requerida.");
-        }
-    }
-
-    private void validaPrecoProduto(ProdutoDTO produtoDTO){
-        if (produtoDTO.getPrecoSugerido() == null){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O preço é requerido.");
-        }
-        if (produtoDTO.getPrecoSugerido().compareTo(BigDecimal.ZERO) < 0){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O valor não pode ser negativo.");
-        }
-    }
-
-    private void validaProdutoAtivo(ProdutoDTO produtoDTO){
-        if (!produtoDTO.getIsAtivo()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Produto está inativo.");
-        }
-    }
 
     @Transactional
     public Long atualizar(Long id_produto,
@@ -120,9 +76,6 @@ public class ProdutoService {
     }
 
     public Produto atualizarProduto(Long id_produto, ProdutoDTO produtoDTO){
-        validaDescricao(produtoDTO);
-        validaUrlFoto(produtoDTO);
-        validaPrecoProduto(produtoDTO);
 
         Produto produto = this.produtoRepository.findById(id_produto).orElseThrow(() ->
                 new EntityNotFoundException("Não há produto com este Id."));
